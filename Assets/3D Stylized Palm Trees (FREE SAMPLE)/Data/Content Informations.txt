@@ -1,0 +1,33 @@
+---3D Stylized Palm Trees (FREE SAMPLE)---
+
+___________Thank you for your purchase!_______________
+
+In this asset pack you will find 2 prefab assets from
+my asset pack 3D Stylized Beach - 60+ assetsPack 
+avaiable on the Unity store.
+The package is complete with 2 3D meshes, textures,
+pre-made materials and, for HDRP only, a Diffuse 
+profile to simulate Subsurface Scattering.
+
+To quicly arrange the setting of the Diffuse Foliage
+(Diffusion Profile Settings) you may change the 
+instensity with Thikness Remap slider and the Color
+with the Transimmion Tint
+If you need more information you can find it follow
+this link to the Unity Manual
+https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.0/manual/Diffusion-Profile.html
+
+The textures are partially censored to discurage
+improper use, since this is a free sample of a larger
+pack acquirable on the Store, the content available is 
+limited for this specific transaction.
+
+if you are satisfied with the content you recieved
+please feel free to look at the other packages within 
+my shop.
+
+shop link: https://assetstore.unity.com/publishers/112683
+
+
+Thank you,
+by Sara Bellio
