@@ -1,3 +1,5 @@
+using System.Collections;
+using MistIsles.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,7 @@ public class QuizUI : MonoBehaviour
     [SerializeField] private Button[] answerButtons;
 
     private Checkpoint currentCheckpoint;
+    private Coroutine lockRoutine;
 
     private void Awake()
     {
@@ -64,12 +67,10 @@ public class QuizUI : MonoBehaviour
             }
         }
 
-        // Pause the game
-        Time.timeScale = 0f;
+        SetButtonsInteractable(true);
 
-        // Allow the mouse to click UI buttons
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        // Pause the game and free the mouse (shared pause service, so other menus don't fight over it)
+        GamePause.Push(GamePause.Quiz);
     }
 
     private void CheckAnswer(int answerIndex)
@@ -81,14 +82,38 @@ public class QuizUI : MonoBehaviour
         {
             Checkpoint completedCheckpoint = currentCheckpoint;
 
+            AudioManager.Play(Sfx.QuizCorrect);
             CloseQuiz();
 
             completedCheckpoint.Complete();
         }
         else
         {
-            feedbackText.text = "Incorrect!";
+            // Wrong answer: give a hint and lock the buttons for a moment,
+            // so the player has to think instead of trying every option.
+            GameStats.WrongAnswers++;
+            AudioManager.Play(Sfx.QuizWrong);
+            string hint = currentCheckpoint.Hint;
+            feedbackText.text = string.IsNullOrEmpty(hint) ? "Incorrect!" : "Not quite. " + hint;
+            if (lockRoutine != null)
+                StopCoroutine(lockRoutine);
+            lockRoutine = StartCoroutine(LockButtons(currentCheckpoint.WrongAnswerLockSeconds));
         }
+    }
+
+    private IEnumerator LockButtons(float seconds)
+    {
+        SetButtonsInteractable(false);
+        // Realtime, because the game is paused while the quiz is open.
+        yield return new WaitForSecondsRealtime(seconds);
+        SetButtonsInteractable(true);
+        lockRoutine = null;
+    }
+
+    private void SetButtonsInteractable(bool value)
+    {
+        foreach (Button b in answerButtons)
+            b.interactable = value;
     }
 
     private void CloseQuiz()
@@ -96,12 +121,13 @@ public class QuizUI : MonoBehaviour
         quizPanel.SetActive(false);
 
         currentCheckpoint = null;
+        if (lockRoutine != null)
+        {
+            StopCoroutine(lockRoutine);
+            lockRoutine = null;
+        }
 
-        // Resume the game
-        Time.timeScale = 1f;
-
-        // Return mouse control to the game
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Resume the game and lock the mouse again
+        GamePause.Pop(GamePause.Quiz);
     }
 }

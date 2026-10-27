@@ -13,6 +13,13 @@ public class Checkpoint : MonoBehaviour
     [Tooltip("0 = first answer, 1 = second answer, etc.")]
     [SerializeField] private int correctAnswerIndex;
 
+    [Header("Wrong Answer")]
+    [Tooltip("Shown after a wrong answer to nudge the player toward the hidden rule.")]
+    [TextArea(1, 3)]
+    [SerializeField] private string hint;
+    [Tooltip("Seconds the answer buttons stay locked after a wrong answer.")]
+    [SerializeField, Min(0f)] private float wrongAnswerLockSeconds = 3f;
+
     [Header("Checkpoint Components")]
     [SerializeField] private BoxCollider checkpointCollider;
     [SerializeField] private GameObject collectedGlow;
@@ -24,6 +31,8 @@ public class Checkpoint : MonoBehaviour
 
     public string Question => question;
     public string[] Answers => answers;
+    public string Hint => hint;
+    public float WrongAnswerLockSeconds => wrongAnswerLockSeconds;
 
     public void Initialize(CheckpointManager manager, bool isActive)
     {
