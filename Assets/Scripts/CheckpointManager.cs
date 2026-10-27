@@ -32,6 +32,18 @@ public class CheckpointManager : MonoBehaviour
         if (completedCheckpoint != checkpoints[currentCheckpointIndex])
             return;
 
+        // If this checkpoint belongs to an island with a hidden rule, the island must be
+        // cleared (guardian defeated) before the next checkpoint unlocks.
+        MistIsles.World.IslandController island =
+            completedCheckpoint.GetComponentInParent<MistIsles.World.IslandController>();
+        if (island != null)
+            island.RuleSolved(AdvanceToNextCheckpoint);
+        else
+            AdvanceToNextCheckpoint();
+    }
+
+    private void AdvanceToNextCheckpoint()
+    {
         // Move to the next checkpoint
         currentCheckpointIndex++;
 
@@ -39,6 +51,8 @@ public class CheckpointManager : MonoBehaviour
         if (currentCheckpointIndex < checkpoints.Length)
         {
             Checkpoint nextCheckpoint = checkpoints[currentCheckpointIndex];
+            // The final checkpoint starts hidden, so show it when it becomes the target.
+            nextCheckpoint.gameObject.SetActive(true);
             nextCheckpoint.Initialize(this, true);
         }
     }

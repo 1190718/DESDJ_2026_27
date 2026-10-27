@@ -2207,6 +2207,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 191502571}
   m_Mesh: {fileID: -439356785465359677, guid: 46ceee1e0f8fec547ad8c36842afe15f, type: 3}
+--- !u!1 &192790197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192790198}
+  m_Layer: 0
+  m_Name: MistIsles_Enemies
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192790198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192790197}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1029829844}
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &202552119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7679479510096779179, guid: 05a887701af30614f819e1db804d10a1, type: 3}
@@ -2411,8 +2443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuizUI
   quizPanel: {fileID: 2049546509}
-  finalPanel: {fileID: 0}
-  finalMessageText: {fileID: 0}
   questionText: {fileID: 843175029}
   feedbackText: {fileID: 1263074362}
   answerButtons:
@@ -3432,7 +3462,7 @@ GameObject:
   - component: {fileID: 280471202}
   - component: {fileID: 280471201}
   - component: {fileID: 280471200}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Ocean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5625,6 +5655,38 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43999c511a596754fb989ff074c5955d, type: 3}
+--- !u!1 &397001287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 397001288}
+  m_Layer: 0
+  m_Name: MistIsles_Guardian
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &397001288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397001287}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1262389121}
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &397738906 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
@@ -6019,6 +6081,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03b41d9b9c953d7478b60073093f695f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationEventForwarder
+--- !u!114 &420328039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420328035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193d1ee191868e046951a5103915c062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Player.PlayerRespawn
+  delayBeforeFade: 1
+  fadeSeconds: 0.6
+  killHeight: -15
+--- !u!114 &420328040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420328035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc16ce0c3e7069d4c908a417dba36ad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Player.PlayerCombat
+  damage: 1
+  cooldown: 0.55
+  hitDelay: 0.25
+  reach: 1.3
+  hitRadius: 1.1
+  hitHeight: 0.9
+  autoAimRadius: 3.5
+--- !u!114 &420328041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420328035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b02a4e770a45318409495ac2e7b8d642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Rules.PlayerMotionTracker
+  movingThreshold: 0.3
+  smoothing: 14
+--- !u!114 &420328042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420328035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bdcdefbba6971e4ca850d8c6eeb07a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Core.Health
+  maxHealth: 5
+  invulnerableAfterHit: 0.8
 --- !u!1001 &422765669
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7672,6 +7796,166 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528485134}
   m_Mesh: {fileID: -439356785465359677, guid: 46ceee1e0f8fec547ad8c36842afe15f, type: 3}
+--- !u!1 &529791452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 529791458}
+  - component: {fileID: 529791457}
+  - component: {fileID: 529791456}
+  - component: {fileID: 529791455}
+  - component: {fileID: 529791454}
+  - component: {fileID: 529791453}
+  m_Layer: 0
+  m_Name: MistIsles_Systems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &529791453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b88c4e834577adb458652284911f6f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.UI.ShopUI
+  items: []
+--- !u!114 &529791454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bab39b1152e12f24f89b49e71cc42774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.UI.PauseMenu
+  mainMenuScene: MainMenu
+--- !u!114 &529791455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd5d2b326616d846841df2ac0f1a422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.UI.GameHUD
+  showControlsOnStart: 1
+--- !u!114 &529791456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31ae4d837541274498675dec9ca89ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Economy.Wallet
+  currencyName: Shells
+  startingAmount: 0
+--- !u!114 &529791457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98bfafc3f1b320e4fa789c8553fdf3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Core.AudioManager
+  effects:
+  - id: 0
+    clip: {fileID: 8300000, guid: c3d57345fac08c14998f22ca07eed25a, type: 3}
+    volume: 1
+  - id: 1
+    clip: {fileID: 8300000, guid: 6653375c81ce25543b19a2f87fdcb39d, type: 3}
+    volume: 1
+  - id: 2
+    clip: {fileID: 8300000, guid: a198a04c8b68406438a41126c4351d43, type: 3}
+    volume: 1
+  - id: 3
+    clip: {fileID: 8300000, guid: 3db9d9a168dcb5541a18bdfd3c8deef2, type: 3}
+    volume: 1
+  - id: 4
+    clip: {fileID: 8300000, guid: 01bdf02c4ac42ef49ab95599402f41f1, type: 3}
+    volume: 1
+  - id: 5
+    clip: {fileID: 8300000, guid: 4858982ceeef52748bbce9de92c646bc, type: 3}
+    volume: 1
+  - id: 6
+    clip: {fileID: 8300000, guid: 0389414ffaec87a41b54444ef8f742f5, type: 3}
+    volume: 1
+  - id: 7
+    clip: {fileID: 8300000, guid: cf846f8d76c13bc42b8eac5ea12be054, type: 3}
+    volume: 1
+  - id: 8
+    clip: {fileID: 8300000, guid: 0e46b113f1e614c42b1d7f7de4b910c4, type: 3}
+    volume: 1
+  - id: 9
+    clip: {fileID: 8300000, guid: 18dc248efd7da484d857d8cf52311cfa, type: 3}
+    volume: 1
+  - id: 10
+    clip: {fileID: 8300000, guid: ab47d4ae7c1d3bc448db123cf230ce2f, type: 3}
+    volume: 1
+  - id: 11
+    clip: {fileID: 8300000, guid: ef737e75767e89d4691e6be6226b2530, type: 3}
+    volume: 1
+  - id: 12
+    clip: {fileID: 8300000, guid: 38e63b5333a01f447beca51c5117ea78, type: 3}
+    volume: 1
+  - id: 13
+    clip: {fileID: 8300000, guid: b2bc1f9fde7221b41a899a115f3836a0, type: 3}
+    volume: 1
+  - id: 14
+    clip: {fileID: 8300000, guid: f96c184f8119d194d8021612aa4ca656, type: 3}
+    volume: 1
+  - id: 15
+    clip: {fileID: 8300000, guid: e98b6aa1f6176a748aa1ab344176c8e0, type: 3}
+    volume: 1
+  - id: 16
+    clip: {fileID: 8300000, guid: 30d921eefbd482d4091c0f518b096ade, type: 3}
+    volume: 1
+  ambience: {fileID: 8300000, guid: dbff6d3bbc5ba4b41acad7c5dffcc93a, type: 3}
+  islandMusic: {fileID: 8300000, guid: 5db9fd0d10fb3114cb5c7848ff9175bc, type: 3}
+  guardianMusic: {fileID: 8300000, guid: 0d9abb923e1ccd24fa4ac4cae3902fc5, type: 3}
+  musicVolume: 0.35
+  ambienceVolume: 0.45
+  effectsVolume: 0.9
+  poolSize: 12
+--- !u!4 &529791458
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529791452}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &532578458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7856,7 +8140,6 @@ MonoBehaviour:
   - {fileID: 793927116}
   - {fileID: 1198846358}
   - {fileID: 1959666828}
-  musicController: {fileID: 0}
 --- !u!1001 &544569156
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11635,19 +11918,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca318729bc2fc444b7a94bfe69ee03c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  question: Teste
+  question: 'The cartographer''s card asks:
+
+    What hidden rule governs Still Shore?'
   answers:
-  - F
-  - T
-  - F
-  - F
-  correctAnswerIndex: 1
+  - The crabs only move when you move
+  - The crabs only attack at night
+  - The crabs are afraid of the water
+  - The crabs follow the sound of your sword
+  correctAnswerIndex: 0
+  hint: Stop walking and watch the crabs closely.
+  wrongAnswerLockSeconds: 3
   checkpointCollider: {fileID: 793927115}
   collectedGlow: {fileID: 1973379983}
-  isFinalCheckpoint: 0
-  finalMessage: 
-  triggersNightTransition: 0
-  nightTransition: {fileID: 0}
 --- !u!1001 &794395644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13934,6 +14217,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2069797885948091226, guid: 7ece6646ef2475b44959032f5d55a8f6, type: 3}
   m_PrefabInstance: {fileID: 640012976}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &938450500
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5151095553090910814, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: awakenOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -32.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 27.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598997696927945230, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7590554506642144707, guid: 8d12a627c727f8743b332a153c309265, type: 3}
+      propertyPath: m_Name
+      value: Kraken_Boss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8d12a627c727f8743b332a153c309265, type: 3}
 --- !u!1001 &942387621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15064,6 +15408,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4315980460206069383, guid: d0fa3c49b2c9cd84bb5a644c53ef025e, type: 3}
   m_PrefabInstance: {fileID: 1027212419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1029829843
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 192790198}
+    m_Modifications:
+    - target: {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_Name
+      value: MistCrab
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.472999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.0711896
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 34.473
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.75062203
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.66073185
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: beee282e801008944a37e0e48f553526, type: 3}
+--- !u!4 &1029829844 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2159177634132298029, guid: beee282e801008944a37e0e48f553526, type: 3}
+  m_PrefabInstance: {fileID: 1029829843}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1031121036
 PrefabInstance:
@@ -17027,12 +17433,10 @@ MonoBehaviour:
   - F
   - F
   correctAnswerIndex: 0
+  hint: 
+  wrongAnswerLockSeconds: 3
   checkpointCollider: {fileID: 1198846360}
   collectedGlow: {fileID: 1279119231}
-  isFinalCheckpoint: 0
-  finalMessage: 
-  triggersNightTransition: 0
-  nightTransition: {fileID: 0}
 --- !u!4 &1198846359
 Transform:
   m_ObjectHideFlags: 0
@@ -17882,6 +18286,79 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4db940c31d61ac149801c850fc645d68, type: 3}
+--- !u!1001 &1262389119
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 397001288}
+    m_Modifications:
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.9743562
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 38.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.098562546
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9951309
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3051194849795972238, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_Name
+      value: ShoreGuardian
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+--- !u!114 &1262389120 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4900780684875337256, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+  m_PrefabInstance: {fileID: 1262389119}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4b75253e7f6614db3a312f5dd13845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Guardian.ShoreGuardian
+--- !u!4 &1262389121 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+  m_PrefabInstance: {fileID: 1262389119}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1263074360
 GameObject:
   m_ObjectHideFlags: 0
@@ -19654,17 +20131,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 464696677}
     m_Modifications:
-    - target: {fileID: 3058560441782647270, guid: cc91c8ba8b9a34f4d99e70d721f60b64, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 4233366137089380037, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.025034066
       objectReference: {fileID: 0}
-    - target: {fileID: 6767091442817321933, guid: cc91c8ba8b9a34f4d99e70d721f60b64, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 4233366137089380037, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0012542872
       objectReference: {fileID: 0}
     - target: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_Name
       value: MaleCharacterPBR
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8855052669661678444, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19709,9 +20190,17 @@ PrefabInstance:
     - target: {fileID: 9036980633323257398, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
+      objectReference: {fileID: 9100000, guid: ff482f4dd68b2ed4d80f045e705ef7db, type: 2}
     - target: {fileID: 9036980633323257398, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3058560441782647270, guid: cc91c8ba8b9a34f4d99e70d721f60b64, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6767091442817321933, guid: cc91c8ba8b9a34f4d99e70d721f60b64, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -19721,6 +20210,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       insertIndex: -1
       addedObject: {fileID: 420328038}
+    - targetCorrespondingSourceObject: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 420328042}
+    - targetCorrespondingSourceObject: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 420328041}
+    - targetCorrespondingSourceObject: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 420328040}
+    - targetCorrespondingSourceObject: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 420328039}
   m_SourcePrefab: {fileID: 100100000, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
 --- !u!4 &1359828717 stripped
 Transform:
@@ -20518,6 +21019,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3350702409952544768, guid: a2a42cc4fc96539448623ff2ca32f9d0, type: 3}
   m_PrefabInstance: {fileID: 778747680}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1429810721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1429810722}
+  m_Layer: 0
+  m_Name: MistIsles_Island2_Landing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1429810722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429810721}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.4031579, z: -0, w: 0.91513044}
+  m_LocalPosition: {x: 41.590546, y: 5.5244207, z: 66.422745}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1429956181
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25409,6 +25941,98 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 588517473460555684, guid: dc961591b5f93e34a9e1805cca0bec55, type: 3}
   m_PrefabInstance: {fileID: 1325774725}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1737606917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1737606921}
+  - component: {fileID: 1737606920}
+  - component: {fileID: 1737606919}
+  - component: {fileID: 1737606918}
+  m_Layer: 0
+  m_Name: MistIsles_Mist
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1737606918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737606917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a2486a42bedda8429de4e39a4dd57d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.IslandMist
+  saturation: -70
+  exposure: -0.35
+  tint: {r: 0.82, g: 0.88, b: 0.94, a: 1}
+  blendDistance: 10
+  fogDensity: 0.03
+  fogColor: {r: 0.72, g: 0.78, b: 0.82, a: 1}
+  liftSeconds: 4
+  island: {fileID: 1865551781}
+--- !u!114 &1737606919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737606917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 0}
+--- !u!65 &1737606920
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737606917}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 61.511032, y: 60.776512, z: 46.831062}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1737606921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737606917}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.4595432, y: 9.945946, z: 25.216356}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1738291735 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
@@ -25419,6 +26043,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7679479510096779179, guid: 05a887701af30614f819e1db804d10a1, type: 3}
   m_PrefabInstance: {fileID: 1587367741}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1741459257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1741459259}
+  - component: {fileID: 1741459258}
+  m_Layer: 0
+  m_Name: MistIsles_Raft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1741459258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741459257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa82aa46b1eb6b74caff5291931892a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.RaftTravel
+  destination: {fileID: 1429810722}
+  destinationName: Whispering Pines
+  visual: {fileID: 2098269850}
+  interactRadius: 4
+  showPrototypeEndCard: 1
+--- !u!4 &1741459259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741459257}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.49858385, z: -0, w: 0.8668415}
+  m_LocalPosition: {x: 8.485076, y: 9.251066, z: 30.94017}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2098269851}
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1741695685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26787,6 +27461,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6987928883966674464, guid: 3f8eda438d8aeab4d9223c5b53f5ef62, type: 3}
   m_PrefabInstance: {fileID: 1786866442}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1786988913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1786988914}
+  m_Layer: 0
+  m_Name: MistIsles_Respawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1786988914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786988913}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.19, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1865551780}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1790214329
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27679,6 +28384,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1865551780}
+  - component: {fileID: 1865551782}
+  - component: {fileID: 1865551781}
   m_Layer: 0
   m_Name: Island_01
   m_TagString: Untagged
@@ -27777,8 +28484,68 @@ Transform:
   - {fileID: 1640630732}
   - {fileID: 1843183552}
   - {fileID: 1359828717}
+  - {fileID: 192790198}
+  - {fileID: 397001288}
+  - {fileID: 1786988914}
+  - {fileID: 1737606921}
+  - {fileID: 1741459259}
+  - {fileID: 1429810722}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1865551781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865551779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dda3498f40192c94e88ae2cd0b918354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.IslandController
+  islandName: Still Shore
+  rule: {fileID: 11400000, guid: 71517d7aef52d2d4da3b4e3d20341c32, type: 2}
+  guardian: {fileID: 1262389120}
+  mist: {fileID: 1737606918}
+  raft: {fileID: 1741459258}
+  respawnPoint: {fileID: 1786988914}
+  area:
+    m_Center: {x: -3.4595432, y: 8.755946, z: 25.216356}
+    m_Extent: {x: 30.755516, y: 30.388256, z: 23.415531}
+  clearReward: 25
+--- !u!114 &1865551782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865551779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 1
+  m_Size: {x: 61.511032, y: 60.776512, z: 46.831062}
+  m_Center: {x: -3.4595432, y: 9.945946, z: 25.216356}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967243
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 2f944a57fa27d9f468c32b6fb5537a2d, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1001 &1871972747
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28778,12 +29545,10 @@ MonoBehaviour:
   - T
   - F
   correctAnswerIndex: 2
+  hint: 
+  wrongAnswerLockSeconds: 3
   checkpointCollider: {fileID: 1959666829}
   collectedGlow: {fileID: 52016830}
-  isFinalCheckpoint: 0
-  finalMessage: 
-  triggersNightTransition: 1
-  nightTransition: {fileID: 0}
 --- !u!65 &1959666829
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -30079,6 +30844,73 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092317032}
   m_Mesh: {fileID: -439356785465359677, guid: 46ceee1e0f8fec547ad8c36842afe15f, type: 3}
+--- !u!1001 &2098269849
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1741459259}
+    m_Modifications:
+    - target: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_Name
+      value: Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.00000059604645
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -7.911066
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+--- !u!1 &2098269850 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+  m_PrefabInstance: {fileID: 2098269849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2098269851 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+  m_PrefabInstance: {fileID: 2098269849}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2104193194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7326308086656437384, guid: 81d960fe44e3f6b46bcda7b24988e254, type: 3}
@@ -30423,3 +31255,5 @@ SceneRoots:
   - {fileID: 430086562}
   - {fileID: 1704789945}
   - {fileID: 264010413}
+  - {fileID: 938450500}
+  - {fileID: 529791458}

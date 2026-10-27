@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c640c9c94a59f4f8a0fad8f302439b, type: 3}
+  m_Name: StillShore_Rule
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Rules.StillShoreRule
+  ruleName: 'Still Shore: they move only when you move'
+  hint: The crabs watch you closely... try standing completely still.
+  revealText: 'The hidden rule: on Still Shore, nothing moves unless you do. Stand still to freeze them!'
+  reactionDelay: 0.1
