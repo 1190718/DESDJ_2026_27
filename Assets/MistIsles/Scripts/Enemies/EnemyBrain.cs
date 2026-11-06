@@ -1,6 +1,7 @@
 using System;
 using MistIsles.Core;
 using MistIsles.Rules;
+using MistIsles.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,7 +44,8 @@ namespace MistIsles.Enemies
 
         [Header("Attack")]
         [SerializeField] private float attackRange = 1.5f;
-        [SerializeField] private int attackDamage = 1;
+        [Tooltip("Damage dealt to the player per hit (player has 100 HP).")]
+        [SerializeField] private int attackDamage = 12;
         [SerializeField] private float attackCooldown = 1.4f;
         [SerializeField] private float attackDuration = 0.9f;
         [SerializeField] private float attackHitMoment = 0.45f;
@@ -52,6 +54,8 @@ namespace MistIsles.Enemies
         [SerializeField] private GameObject lootPrefab;
         [SerializeField] private int lootCount = 2;
         [SerializeField] private float corpseLifetime = 4f;
+        [Tooltip("Height of the small health bar shown over this mob after it is hit.")]
+        [SerializeField] private float healthBarHeight = 1.2f;
 
         private static readonly int SpeedId = Animator.StringToHash("Speed");
         private static readonly int AttackId = Animator.StringToHash("Attack");
@@ -97,6 +101,32 @@ namespace MistIsles.Enemies
                 agent.Warp(hit.position);
             home = transform.position;
             waitUntil = UnityEngine.Random.Range(0f, patrolPause.y);
+            GameHUD.TrackEnemy(health, healthBarHeight);
+        }
+
+        /// <summary>Makes the mob hunt the player straight away (used by ambushes).</summary>
+        public void Alert()
+        {
+            if (Current == State.Dead)
+                return;
+            lastSeen = clock;
+            Enter(State.Chase);
+        }
+
+        /// <summary>Island reset: full health, back at the spawn point, calm.</summary>
+        public void ResetToHome()
+        {
+            if (Current == State.Dead)
+                return;
+            health.ResetHealth();
+            if (agent.isOnNavMesh)
+            {
+                agent.ResetPath();
+                agent.Warp(home);
+            }
+            lastSeen = float.NegativeInfinity;
+            nextAttack = 0f;
+            Enter(State.Patrol);
         }
 
         private void Update()

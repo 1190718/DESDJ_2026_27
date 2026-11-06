@@ -118,7 +118,7 @@ namespace MistIsles.World
                 GameHUD.ShowEndCard(
                     "End of the first prototype",
                     $"You uncovered Still Shore's hidden rule and freed the island.\n{destinationName} and the Drowned Isle are coming in the final version.",
-                    $"Time {GameStats.FormatTime(GameStats.PlayTime)}   ·   Crabs defeated {GameStats.CrabsDefeated}   ·   Shells found {GameStats.ShellsCollected}   ·   Falls {GameStats.Deaths}   ·   Wrong answers {GameStats.WrongAnswers}");
+                    $"Time {GameStats.FormatTime(GameStats.PlayTime)}   ·   Creatures defeated {GameStats.CrabsDefeated}   ·   Shells found {GameStats.ShellsCollected}   ·   Falls {GameStats.Deaths}   ·   Wrong answers {GameStats.WrongAnswers}");
             }
         }
 

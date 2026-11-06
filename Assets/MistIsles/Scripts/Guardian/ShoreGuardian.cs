@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using MistIsles.Core;
 using MistIsles.Enemies;
 using MistIsles.Rules;
@@ -40,7 +41,8 @@ namespace MistIsles.Guardian
 
         [Header("Attacks")]
         [SerializeField] private float attackRange = 3.2f;
-        [SerializeField] private int attackDamage = 1;
+        [SerializeField] private int clawDamage = 20;
+        [SerializeField] private int slamDamage = 30;
         [SerializeField] private float attackCooldown = 1.8f;
         [SerializeField] private float attackHitMoment = 0.5f;
         [SerializeField] private float attackDuration = 1.1f;
@@ -58,6 +60,7 @@ namespace MistIsles.Guardian
         [SerializeField] private float tremorStillTimePhaseTwo = 3f;
         [SerializeField] private float tremorWindup = 1.1f;
         [SerializeField] private float tremorRadius = 9f;
+        [SerializeField] private int tremorDamage = 15;
 
         [Header("Phase 2")]
         [SerializeField] private GameObject minionPrefab;
@@ -87,6 +90,7 @@ namespace MistIsles.Guardian
         private bool tremorRunning;
         private bool lastBlockToast;
         private float coreGlow;
+        private readonly List<GameObject> minions = new List<GameObject>();
 
         public Phase Current { get; private set; } = Phase.Dormant;
         public bool Vulnerable { get; private set; }
@@ -125,6 +129,48 @@ namespace MistIsles.Guardian
                         return m;
                     }
             return null;
+        }
+
+        /// <summary>
+        /// Island reset after the player dies: the guardian sinks back under the sand at full
+        /// health, its phase-two minions vanish and the boss bar/music go back to normal.
+        /// Does nothing once it has been defeated.
+        /// </summary>
+        public void ResetToDormant()
+        {
+            if (Current == Phase.Dead)
+                return;
+            bool wasAwake = Current != Phase.Dormant;
+            StopAllCoroutines();
+            foreach (GameObject m in minions)
+                if (m != null)
+                    Destroy(m);
+            minions.Clear();
+
+            attacking = false;
+            tremorRunning = false;
+            phaseTwo = false;
+            lastBlockToast = false;
+            frozenFor = 0f;
+            clock = 0f;
+            nextAttack = 0f;
+            nextRepath = 0f;
+            Vulnerable = false;
+            Frozen = false;
+            health.ResetHealth();
+            if (animator != null)
+            {
+                animator.speed = 1f;
+                animator.Rebind();
+            }
+            if (agent.enabled && agent.isOnNavMesh)
+                agent.isStopped = false;
+            if (wasAwake)
+            {
+                GameHUD.HideBoss();
+                AudioManager.PlayMusic(MusicTrack.Island);
+            }
+            SetDormant();
         }
 
         private void SetDormant()
@@ -261,7 +307,7 @@ namespace MistIsles.Guardian
                         AudioManager.Play(Sfx.GuardianSlam, transform.position, 0.05f, 0.7f);
                     else
                         AudioManager.Play(Sfx.CrabAttack, transform.position, 0.05f);
-                    HitPlayerWithin(slam ? slamRadius : attackRange + 0.6f);
+                    HitPlayerWithin(slam ? slamRadius : attackRange + 0.6f, slam ? slamDamage : clawDamage);
                 }
                 yield return null;
             }
@@ -278,13 +324,13 @@ namespace MistIsles.Guardian
             if (Current == Phase.Fighting)
             {
                 AudioManager.Play(Sfx.GuardianSlam, transform.position, 0f);
-                HitPlayerWithin(tremorRadius);
+                HitPlayerWithin(tremorRadius, tremorDamage);
             }
             yield return new WaitForSeconds(1.5f);
             tremorRunning = false;
         }
 
-        private void HitPlayerWithin(float radius)
+        private void HitPlayerWithin(float radius, int damage)
         {
             Transform player = PlayerLocator.Player;
             if (player == null)
@@ -292,7 +338,7 @@ namespace MistIsles.Guardian
             Vector3 to = player.position - transform.position;
             to.y = 0f;
             if (to.magnitude <= radius)
-                PlayerLocator.Health?.TakeDamage(new DamageInfo(attackDamage, player.position, to.normalized, gameObject));
+                PlayerLocator.Health?.TakeDamage(new DamageInfo(damage, player.position, to.normalized, gameObject));
         }
 
         private void UpdateCoreGlow()
@@ -337,6 +383,7 @@ namespace MistIsles.Guardian
                 if (NavMesh.SamplePosition(transform.position + offset, out NavMeshHit hit, 4f, NavMesh.AllAreas))
                 {
                     GameObject m = Instantiate(minionPrefab, hit.position, Quaternion.identity, transform.parent);
+                    minions.Add(m);
                     EnemyBrain brain = m.GetComponent<EnemyBrain>();
                     if (brain != null)
                         brain.SetRule(rule);

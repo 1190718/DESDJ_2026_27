@@ -24,11 +24,26 @@ namespace MistIsles.UI
         public static readonly Color HeartEmpty = new Color(0.25f, 0.27f, 0.3f, 0.9f);
         public static readonly Color Shell = new Color(0.98f, 0.86f, 0.62f);
 
-        private static Sprite rounded, heart, circle;
+        // Cartographer's card palette: aged paper, brown ink, red wax.
+        public static readonly Color Parchment = new Color(0.93f, 0.86f, 0.70f);
+        public static readonly Color ParchmentDark = new Color(0.80f, 0.70f, 0.52f);
+        public static readonly Color InkBrown = new Color(0.24f, 0.16f, 0.09f);
+        public static readonly Color InkFaded = new Color(0.45f, 0.35f, 0.24f);
+        public static readonly Color WaxRed = new Color(0.62f, 0.13f, 0.12f);
+        public static readonly Color MistOverlay = new Color(0.03f, 0.09f, 0.11f, 0.42f);
+
+        private static Sprite rounded, heart, circle, parchment, vignette, white;
 
         public static Sprite RoundedSprite => rounded != null ? rounded : rounded = MakeRounded();
         public static Sprite HeartSprite => heart != null ? heart : heart = MakeShape(64, Heart01);
         public static Sprite CircleSprite => circle != null ? circle : circle = MakeShape(64, Circle01);
+        public static Sprite ParchmentSprite => parchment != null ? parchment : parchment = MakeParchment();
+        public static Sprite VignetteSprite => vignette != null ? vignette : vignette = MakeVignette();
+        /// <summary>
+        /// Plain white sprite. Image.Type.Filled only clips when the Image has a sprite;
+        /// without one Unity draws the full rect, which made every health bar look full.
+        /// </summary>
+        public static Sprite WhiteSprite => white != null ? white : white = MakeWhite();
 
         // ------------------------------------------------------------------ builders
 
@@ -155,6 +170,17 @@ namespace MistIsles.UI
 
         // ------------------------------------------------------------------ procedural sprites
 
+        private static Sprite MakeWhite()
+        {
+            var tex = new Texture2D(4, 4, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[16];
+            for (int i = 0; i < px.Length; i++)
+                px[i] = new Color32(255, 255, 255, 255);
+            tex.SetPixels32(px);
+            tex.Apply();
+            return Sprite.Create(tex, new UnityEngine.Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 100f);
+        }
+
         private static Sprite MakeRounded()
         {
             const int n = 64;
@@ -192,6 +218,53 @@ namespace MistIsles.UI
                             cover += inside(u, v);
                         }
                     px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * cover / (ss * ss)));
+                }
+            tex.SetPixels32(px);
+            tex.Apply();
+            return Sprite.Create(tex, new UnityEngine.Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        /// <summary>
+        /// Aged paper: Perlin-noise fibres and blotches, edges darkened as if burnt, slightly
+        /// ragged outline. 9-sliced so it stretches to any card size without blurring the edge.
+        /// </summary>
+        private static Sprite MakeParchment()
+        {
+            const int n = 256;
+            const float border = 48f;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    // distance to the nearest edge, with a little noise so the outline is ragged
+                    float edge = Mathf.Min(Mathf.Min(x, n - 1 - x), Mathf.Min(y, n - 1 - y));
+                    float rag = (Mathf.PerlinNoise(x * 0.09f, y * 0.09f) - 0.5f) * 6f;
+                    float e = edge + rag;
+                    float alpha = Mathf.Clamp01((e - 2f) / 2f);
+                    float burn = 1f - Mathf.Clamp01(e / border);           // 1 at the edge, 0 inside
+                    float fibre = Mathf.PerlinNoise(x * 0.35f, y * 0.04f) * 0.08f;
+                    float blotch = Mathf.PerlinNoise(x * 0.02f + 7f, y * 0.02f + 3f) * 0.12f;
+                    float shade = 1f - fibre - blotch - burn * burn * 0.45f;
+                    px[y * n + x] = new Color32((byte)(255 * shade), (byte)(255 * shade), (byte)(255 * shade), (byte)(255 * alpha));
+                }
+            tex.SetPixels32(px);
+            tex.Apply();
+            return Sprite.Create(tex, new UnityEngine.Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, new Vector4(border, border, border, border));
+        }
+
+        /// <summary>Transparent centre, dark edges: frames the game behind a menu.</summary>
+        private static Sprite MakeVignette()
+        {
+            const int n = 128;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float u = (x + 0.5f) / n * 2f - 1f, v = (y + 0.5f) / n * 2f - 1f;
+                    float d = Mathf.Clamp01((Mathf.Sqrt(u * u + v * v) - 0.45f) / 0.95f);
+                    px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * d * d));
                 }
             tex.SetPixels32(px);
             tex.Apply();

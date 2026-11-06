@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bdcdefbba6971e4ca850d8c6eeb07a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Core.Health
-  maxHealth: 3
+  maxHealth: 30
   invulnerableAfterHit: 0
 --- !u!114 &8402349073692065721
 MonoBehaviour:
@@ -120,13 +120,14 @@ MonoBehaviour:
   patrolPause: {x: 1, y: 3}
   turnSpeed: 540
   attackRange: 1.5
-  attackDamage: 1
+  attackDamage: 12
   attackCooldown: 1.4
   attackDuration: 0.9
   attackHitMoment: 0.45
   lootPrefab: {fileID: 3144928681262208500, guid: 2733a3aceee89fe45900d0c3170440d3, type: 3}
   lootCount: 2
   corpseLifetime: 4
+  healthBarHeight: 1.1
 --- !u!1001 &782288766572375581
 PrefabInstance:
   m_ObjectHideFlags: 0
