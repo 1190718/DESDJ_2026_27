@@ -117,7 +117,7 @@ namespace MistIsles.UI
             {
                 if (ok)
                 {
-                    Wallet.Instance?.Add(item.amount);
+                    Wallet.Instance?.Add(item.amount, atRisk: false);
                     AudioManager.Play(Sfx.QuizCorrect);
                 }
                 GameHUD.Toast(message, ok ? GameHUD.Good : GameHUD.Danger, 2.5f);
@@ -134,7 +134,7 @@ namespace MistIsles.UI
             switch (item.kind)
             {
                 case ShopItemKind.Heal:
-                    if (h != null && h.Current >= h.Max) { reason = "Your hearts are already full."; return false; }
+                    if (h != null && h.Current >= h.Max) { reason = "Your health is already full."; return false; }
                     break;
                 case ShopItemKind.RuleHint:
                     IslandController island = IslandController.PlayerIsland;

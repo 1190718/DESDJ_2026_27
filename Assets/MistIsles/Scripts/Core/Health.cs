@@ -55,6 +55,8 @@ namespace MistIsles.Core
         {
             if (IsDead || info.Amount <= 0)
                 return false;
+            if (IsOwnHit(info.Source))
+                return false;
             if (Time.time < lastHitTime + invulnerableAfterHit)
                 return false;
             if (DamageFilter != null && !DamageFilter(info))
@@ -70,6 +72,15 @@ namespace MistIsles.Core
             if (Current == 0)
                 Died?.Invoke();
             return true;
+        }
+
+        /// <summary>Nothing can hurt itself: hits whose source is this object, a child or a parent are ignored.</summary>
+        private bool IsOwnHit(GameObject source)
+        {
+            if (source == null)
+                return false;
+            Transform s = source.transform;
+            return s == transform || s.IsChildOf(transform) || transform.IsChildOf(s);
         }
 
         public void Heal(int amount)

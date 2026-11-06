@@ -25,9 +25,12 @@ namespace MistIsles.EditorTools
     /// <summary>
     /// Tools > Mist Isles menu. Builds everything the Still Shore slice needs from code, so the
     /// work arrives as scripts and assets instead of hand-edited scene YAML:
-    ///   1. Build Assets: rule asset, materials, animator controllers, crab / guardian / shell prefabs.
-    ///   2. Set Up Still Shore: adds the systems, player components, NavMesh, crabs, guardian,
-    ///      mist, raft and card text to the open GameScene. Safe to run again (it reuses what exists).
+    ///   1. Build Assets: rule asset, materials, animator controllers, prefabs for the crab,
+    ///      the common mobs (RPG Monster Duo slime/turtle if the pack is imported, crab variants
+    ///      otherwise), the guardian, shells, map fragments and the sword-slash material.
+    ///   2. Set Up Still Shore: removes the Kraken (saved for island 3), adds the systems, player
+    ///      components, NavMesh, mob camps, a hidden map fragment, guardian, mist, raft and the
+    ///      rule-builder card to the open GameScene. Safe to run again (it rebuilds what it owns).
     ///   3. Create Main Menu Scene, if Assets/Scenes/MainMenu.unity is missing.
     /// </summary>
     public static class MistIslesSetup
@@ -41,6 +44,11 @@ namespace MistIsles.EditorTools
         private const string CrabPrefabPath = Gen + "/Prefabs/MistCrab.prefab";
         private const string GuardianPrefabPath = Gen + "/Prefabs/ShoreGuardian.prefab";
         private const string ShellPrefabPath = Gen + "/Prefabs/ShellPickup.prefab";
+        private const string SlimePrefabPath = Gen + "/Prefabs/Mob_Slime.prefab";
+        private const string TurtlePrefabPath = Gen + "/Prefabs/Mob_TurtleShell.prefab";
+        private const string FragmentPrefabPath = Gen + "/Prefabs/MapFragment.prefab";
+        private const string SlashMaterialPath = Gen + "/Materials/SwordSlash.mat";
+        private const string MonsterPackHint = "Monster Duo";
         private const string PlayerControllerPath = Gen + "/Animators/MistIsles_Player.controller";
         private const string PlayerMaskPath = Gen + "/Animators/UpperBody.mask";
         private const string StarterControllerPath = "Assets/Starter Assets/Runtime/ThirdPersonController/Character/Animations/StarterAssetsThirdPerson.controller";
@@ -67,7 +75,11 @@ namespace MistIsles.EditorTools
             AnimatorController guardCtrl = BuildCreatureController(GuardianFbx, Gen + "/Animators/ShoreGuardian.controller", true);
             GameObject crab = BuildCrabPrefab(crabCtrl, crabMats, shell);
             BuildGuardianPrefab(guardCtrl, guardMats, crab);
+            string mobSource = BuildCommonMobs(shell, crabCtrl, crabMats);
+            BuildFragmentPrefab();
+            BuildSlashMaterial();
             BuildPlayerController();
+            Debug.Log("[Mist Isles] Common mobs: " + mobSource);
 
             AssetDatabase.SaveAssets();
             Debug.Log($"[Mist Isles] Assets built in {Gen}. Rule: {rule.RuleName}. Next: open GameScene and run Tools > Mist Isles > 2.");
@@ -149,7 +161,16 @@ namespace MistIsles.EditorTools
             Dictionary<string, AnimationClip> clips = ClipsIn(fbxPath);
             if (clips.Count == 0)
                 throw new System.Exception($"No animation clips found in {fbxPath}. Is Git LFS installed (git lfs pull)?");
+            return BuildController(clips, path, guardian);
+        }
 
+        /// <summary>
+        /// Idle and Walk blended by the Speed float; Attack/Hit (and Slam/Roar for the guardian)
+        /// from Any State by trigger, returning to Idle; Die from Any State. Same parameters for
+        /// every creature, so EnemyBrain drives any model.
+        /// </summary>
+        private static AnimatorController BuildController(Dictionary<string, AnimationClip> clips, string path, bool guardian)
+        {
             AssetDatabase.DeleteAsset(path);
             AnimatorController c = AnimatorController.CreateAnimatorControllerAtPath(path);
             c.AddParameter("Speed", AnimatorControllerParameterType.Float);
@@ -262,10 +283,12 @@ namespace MistIsles.EditorTools
             col.center = new Vector3(0f, 0.35f, 0f);
 
             Health health = root.AddComponent<Health>();
-            SetField(health, "maxHealth", 3);
+            SetField(health, "maxHealth", 30);
             EnemyBrain brain = root.AddComponent<EnemyBrain>();
             SetField(brain, "lootPrefab", shell);
             SetField(brain, "rule", AssetDatabase.LoadAssetAtPath<IslandRule>(RulePath));
+            SetField(brain, "attackDamage", 12);
+            SetField(brain, "healthBarHeight", 1.1f);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, CrabPrefabPath);
             Object.DestroyImmediate(root);
@@ -292,13 +315,357 @@ namespace MistIsles.EditorTools
             col.center = new Vector3(0f, 1.0f, 0f);
 
             Health health = root.AddComponent<Health>();
-            SetField(health, "maxHealth", 10);
+            SetField(health, "maxHealth", 120);
             ShoreGuardian guardian = root.AddComponent<ShoreGuardian>();
             SetField(guardian, "minionPrefab", minion);
             SetField(guardian, "rule", AssetDatabase.LoadAssetAtPath<IslandRule>(RulePath));
 
             PrefabUtility.SaveAsPrefabAsset(root, GuardianPrefabPath);
             Object.DestroyImmediate(root);
+        }
+
+        // ------------------------------------------------------------------ common mobs
+
+        private struct MobStats
+        {
+            public string name;
+            public int health, damage, loot;
+            public float height, sight, patrolSpeed, chaseSpeed, attackRange, cooldown;
+        }
+
+        private static readonly MobStats SlimeStats = new MobStats { name = "Slime", health = 20, damage = 8, loot = 1, height = 0.9f, sight = 9f, patrolSpeed = 1.3f, chaseSpeed = 3.2f, attackRange = 1.4f, cooldown = 1.3f };
+        private static readonly MobStats TurtleStats = new MobStats { name = "TurtleShell", health = 40, damage = 15, loot = 3, height = 1.2f, sight = 10f, patrolSpeed = 1.0f, chaseSpeed = 2.6f, attackRange = 1.7f, cooldown = 1.7f };
+
+        /// <summary>
+        /// Builds Mob_Slime and Mob_TurtleShell. Uses the free "RPG Monster Duo PBR Polyart" pack
+        /// (same publisher as the hero) when it is in the project; otherwise falls back to small
+        /// and large Mist Crab variants so the game still works. Returns a description for the log.
+        /// </summary>
+        private static string BuildCommonMobs(GameObject shell, AnimatorController crabCtrl, Dictionary<string, Material> crabMats)
+        {
+            string pack = FindPackFolder();
+            if (pack != null)
+            {
+                ConvertBuiltInMaterials(pack);
+                bool slime = BuildPackMob(pack, "Slime", SlimeStats, SlimePrefabPath, shell);
+                bool turtle = BuildPackMob(pack, "Turtle", TurtleStats, TurtlePrefabPath, shell);
+                if (!slime)
+                    BuildCrabVariant(SlimeStats, SlimePrefabPath, 0.75f, crabCtrl, crabMats, shell);
+                if (!turtle)
+                    BuildCrabVariant(TurtleStats, TurtlePrefabPath, 1.35f, crabCtrl, crabMats, shell);
+                return $"pack '{pack}' (slime {(slime ? "OK" : "missing, crab used")}, turtle {(turtle ? "OK" : "missing, crab used")})";
+            }
+            BuildCrabVariant(SlimeStats, SlimePrefabPath, 0.75f, crabCtrl, crabMats, shell);
+            BuildCrabVariant(TurtleStats, TurtlePrefabPath, 1.35f, crabCtrl, crabMats, shell);
+            return "RPG Monster Duo pack not found; using small/large Mist Crab variants. Import the free pack and run Build Assets again to swap them.";
+        }
+
+        private static string FindPackFolder()
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.IndexOf(MonsterPackHint, System.StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+                string[] parts = path.Split('/');
+                // the top folder under Assets that contains "Monster Duo"
+                for (int i = 1; i < parts.Length - 1; i++)
+                    if (parts[i].IndexOf(MonsterPackHint, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                        return string.Join("/", parts.Take(i + 1));
+            }
+            return null;
+        }
+
+        private static bool BuildPackMob(string pack, string key, MobStats stats, string prefabPath, GameObject shell)
+        {
+            GameObject source = AssetDatabase.FindAssets("t:Prefab", new[] { pack })
+                .Select(g => AssetDatabase.GUIDToAssetPath(g))
+                .Where(p => Path.GetFileNameWithoutExtension(p).IndexOf(key, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderByDescending(p => Path.GetFileName(p).Contains("PBR"))
+                .ThenBy(p => p.Length)
+                .Select(p => AssetDatabase.LoadAssetAtPath<GameObject>(p))
+                .FirstOrDefault(go => go != null && go.GetComponentsInChildren<Renderer>(true).Length > 0);
+            if (source == null)
+                return false;
+
+            Dictionary<string, AnimationClip> all = PackClips(pack, key);
+            var clips = new Dictionary<string, AnimationClip>
+            {
+                ["Idle"] = Pick(all, "IdleBattle", "Idle_Battle", "IdleNormal", "Idle"),
+                ["Walk"] = Pick(all, "WalkFWD", "Walk", "RunFWD", "Run", "Move"),
+                ["Attack"] = Pick(all, "Attack01", "Attack"),
+                ["Hit"] = Pick(all, "GetHit", "Hit", "Damage"),
+                ["Die"] = Pick(all, "Die", "Death", "Dead"),
+            };
+            foreach (string k in clips.Keys.Where(k => clips[k] == null).ToList())
+                clips.Remove(k);
+            if (!clips.ContainsKey("Idle") || !clips.ContainsKey("Walk"))
+            {
+                Debug.LogWarning($"[Mist Isles] {key}: Idle/Walk clips not found in {pack}; using a crab instead.");
+                return false;
+            }
+            MakeLooping(clips["Idle"]);
+            MakeLooping(clips["Walk"]);
+            // reload after a possible reimport so the references are fresh
+            all = PackClips(pack, key);
+            foreach (string k in clips.Keys.ToList())
+                clips[k] = all.Values.FirstOrDefault(c => c.name == clips[k].name) ?? clips[k];
+
+            AnimatorController ctrl = BuildController(clips, $"{Gen}/Animators/Mob_{stats.name}.controller", false);
+
+            var root = new GameObject("Mob_" + stats.name);
+            var model = (GameObject)PrefabUtility.InstantiatePrefab(source, root.transform);
+            PrefabUtility.UnpackPrefabInstance(model, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            model.name = "Model";
+            // keep only visuals: the pack's own scripts, colliders and rigidbodies are removed
+            foreach (MonoBehaviour mb in model.GetComponentsInChildren<MonoBehaviour>(true))
+                Object.DestroyImmediate(mb);
+            foreach (Collider c in model.GetComponentsInChildren<Collider>(true))
+                Object.DestroyImmediate(c);
+            foreach (Rigidbody rb in model.GetComponentsInChildren<Rigidbody>(true))
+                Object.DestroyImmediate(rb);
+
+            Animator anim = model.GetComponentInChildren<Animator>(true);
+            if (anim == null)
+                anim = model.AddComponent<Animator>();
+            anim.runtimeAnimatorController = ctrl;
+            anim.applyRootMotion = false;
+            anim.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+
+            // normalise size and stand it on the ground
+            Bounds b = RendererBounds(model);
+            if (b.size.y > 0.01f)
+            {
+                float k = Mathf.Clamp(stats.height / b.size.y, 0.2f, 5f);
+                model.transform.localScale *= k;
+                b = RendererBounds(model);
+            }
+            model.transform.localPosition -= new Vector3(0f, b.min.y - root.transform.position.y, 0f);
+            b = RendererBounds(model);
+
+            float footprint = Mathf.Max(b.size.x, b.size.z);
+            FinishMob(root, stats, shell, footprint, b.size.y);
+            PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            Object.DestroyImmediate(root);
+            return true;
+        }
+
+        private static void BuildCrabVariant(MobStats stats, string prefabPath, float scale, AnimatorController crabCtrl, Dictionary<string, Material> crabMats, GameObject shell)
+        {
+            var root = new GameObject("Mob_" + stats.name);
+            InstantiateModel(CrabFbx, root.transform, crabCtrl, crabMats, scale);
+            FinishMob(root, stats, shell, 1.3f * scale, 0.8f * scale);
+            PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            Object.DestroyImmediate(root);
+        }
+
+        private static void FinishMob(GameObject root, MobStats stats, GameObject shell, float footprint, float height)
+        {
+            float r = Mathf.Clamp(footprint * 0.4f, 0.3f, 0.9f);
+            NavMeshAgent agent = root.AddComponent<NavMeshAgent>();
+            agent.radius = r;
+            agent.height = Mathf.Max(0.5f, height);
+            agent.speed = stats.chaseSpeed;
+            agent.angularSpeed = 480f;
+            agent.acceleration = 12f;
+            agent.stoppingDistance = Mathf.Max(0.5f, stats.attackRange - 0.5f);
+
+            CapsuleCollider col = root.AddComponent<CapsuleCollider>();
+            col.radius = r;
+            col.height = Mathf.Max(height, 2f * r);
+            col.center = new Vector3(0f, col.height * 0.5f, 0f);
+
+            Health health = root.AddComponent<Health>();
+            SetField(health, "maxHealth", stats.health);
+            EnemyBrain brain = root.AddComponent<EnemyBrain>();
+            SetField(brain, "rule", AssetDatabase.LoadAssetAtPath<IslandRule>(RulePath));
+            SetField(brain, "lootPrefab", shell);
+            SetField(brain, "lootCount", stats.loot);
+            SetField(brain, "attackDamage", stats.damage);
+            SetField(brain, "sightRange", stats.sight);
+            SetField(brain, "patrolSpeed", stats.patrolSpeed);
+            SetField(brain, "chaseSpeed", stats.chaseSpeed);
+            SetField(brain, "attackRange", stats.attackRange);
+            SetField(brain, "attackCooldown", stats.cooldown);
+            SetField(brain, "patrolRadius", 5f);
+            SetField(brain, "healthBarHeight", height + 0.4f);
+        }
+
+        private static Dictionary<string, AnimationClip> PackClips(string pack, string key)
+        {
+            var result = new Dictionary<string, AnimationClip>();
+            var paths = AssetDatabase.FindAssets("t:AnimationClip", new[] { pack })
+                .Concat(AssetDatabase.FindAssets("t:Model", new[] { pack }))
+                .Select(g => AssetDatabase.GUIDToAssetPath(g)).Distinct();
+            foreach (string path in paths)
+                foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(path))
+                    if (o is AnimationClip clip && !clip.name.StartsWith("__preview__")
+                        && (path.IndexOf(key, System.StringComparison.OrdinalIgnoreCase) >= 0 || clip.name.IndexOf(key, System.StringComparison.OrdinalIgnoreCase) >= 0))
+                        result[path + "|" + clip.name] = clip;
+            return result;
+        }
+
+        private static AnimationClip Pick(Dictionary<string, AnimationClip> clips, params string[] keys)
+        {
+            foreach (string k in keys)
+                foreach (AnimationClip c in clips.Values)
+                    if (c.name.IndexOf(k, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                        return c;
+            return null;
+        }
+
+        /// <summary>Idle/Walk must loop. If the pack imported them as one-shots, fix the importer.</summary>
+        private static void MakeLooping(AnimationClip clip)
+        {
+            if (clip == null || clip.isLooping)
+                return;
+            string path = AssetDatabase.GetAssetPath(clip);
+            if (AssetImporter.GetAtPath(path) is ModelImporter importer)
+            {
+                ModelImporterClipAnimation[] defs = importer.clipAnimations.Length > 0 ? importer.clipAnimations : importer.defaultClipAnimations;
+                foreach (ModelImporterClipAnimation d in defs)
+                    if (d.name == clip.name)
+                        d.loopTime = true;
+                importer.clipAnimations = defs;
+                importer.SaveAndReimport();
+            }
+            else
+            {
+                AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+                settings.loopTime = true;
+                AnimationUtility.SetAnimationClipSettings(clip, settings);
+                EditorUtility.SetDirty(clip);
+            }
+        }
+
+        /// <summary>
+        /// The project uses URP. Materials that still use the Built-in "Standard" shader render pink,
+        /// so they are switched to URP Lit, keeping their textures and colours.
+        /// </summary>
+        private static void ConvertBuiltInMaterials(string folder)
+        {
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            int converted = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { folder }))
+            {
+                var m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
+                if (m == null || m.shader == null)
+                    continue;
+                string sn = m.shader.name;
+                if (sn != "Standard" && sn != "Standard (Specular setup)" && !sn.Contains("InternalErrorShader"))
+                    continue;
+                Texture main = m.HasProperty("_MainTex") ? m.GetTexture("_MainTex") : null;
+                Color color = m.HasProperty("_Color") ? m.GetColor("_Color") : Color.white;
+                Texture normal = m.HasProperty("_BumpMap") ? m.GetTexture("_BumpMap") : null;
+                Texture metal = m.HasProperty("_MetallicGlossMap") ? m.GetTexture("_MetallicGlossMap") : null;
+                m.shader = lit;
+                m.SetTexture("_BaseMap", main);
+                m.SetColor("_BaseColor", color);
+                if (normal != null)
+                {
+                    m.SetTexture("_BumpMap", normal);
+                    m.EnableKeyword("_NORMALMAP");
+                }
+                if (metal != null)
+                {
+                    m.SetTexture("_MetallicGlossMap", metal);
+                    m.EnableKeyword("_METALLICSPECGLOSSMAP");
+                }
+                EditorUtility.SetDirty(m);
+                converted++;
+            }
+            if (converted > 0)
+                Debug.Log($"[Mist Isles] Converted {converted} Built-in material(s) in {folder} to URP Lit.");
+        }
+
+        private static Bounds RendererBounds(GameObject go)
+        {
+            Renderer[] rs = go.GetComponentsInChildren<Renderer>(true);
+            if (rs.Length == 0)
+                return new Bounds(go.transform.position, Vector3.one);
+            Bounds b = rs[0].bounds;
+            foreach (Renderer r in rs)
+                b.Encapsulate(r.bounds);
+            return b;
+        }
+
+        // ------------------------------------------------------------------ fragment and slash
+
+        /// <summary>A torn parchment piece that spins over a soft beam of light.</summary>
+        private static void BuildFragmentPrefab()
+        {
+            Material paper = LitMaterial("MapFragment_Paper", Hex("EEDDB4"), Hex("F2C46B") * 0.6f);
+            Material beam = AssetDatabase.LoadAssetAtPath<Material>(Gen + "/Materials/MapFragment_Beam.mat");
+            if (beam == null)
+            {
+                beam = new Material(Shader.Find("Sprites/Default"));
+                AssetDatabase.CreateAsset(beam, Gen + "/Materials/MapFragment_Beam.mat");
+            }
+            beam.color = new Color(1f, 0.88f, 0.55f, 0.28f);
+            EditorUtility.SetDirty(beam);
+
+            var root = new GameObject("MapFragment");
+            root.AddComponent<MapFragment>();
+            var spinner = new GameObject("Spinner");
+            spinner.transform.SetParent(root.transform, false);
+            for (int i = 0; i < 2; i++)
+            {
+                GameObject piece = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Object.DestroyImmediate(piece.GetComponent<Collider>());
+                piece.name = "Piece" + i;
+                piece.transform.SetParent(spinner.transform, false);
+                piece.transform.localScale = i == 0 ? new Vector3(0.55f, 0.02f, 0.4f) : new Vector3(0.3f, 0.02f, 0.22f);
+                piece.transform.localPosition = i == 0 ? Vector3.zero : new Vector3(0.18f, 0.03f, -0.12f);
+                piece.transform.localRotation = Quaternion.Euler(70f, i * 25f, 8f);
+                piece.GetComponent<Renderer>().sharedMaterial = paper;
+            }
+            GameObject light = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            Object.DestroyImmediate(light.GetComponent<Collider>());
+            light.name = "Beam";
+            light.transform.SetParent(root.transform, false);
+            light.transform.localPosition = new Vector3(0f, 2.5f, 0f);
+            light.transform.localScale = new Vector3(0.18f, 2.5f, 0.18f);
+            Renderer lr = light.GetComponent<Renderer>();
+            lr.sharedMaterial = beam;
+            lr.shadowCastingMode = ShadowCastingMode.Off;
+            var glow = new GameObject("Glow").AddComponent<Light>();
+            glow.transform.SetParent(root.transform, false);
+            glow.transform.localPosition = Vector3.up * 0.5f;
+            glow.type = LightType.Point;
+            glow.range = 4f;
+            glow.intensity = 2f;
+            glow.color = new Color(1f, 0.85f, 0.55f);
+            PrefabUtility.SaveAsPrefabAsset(root, FragmentPrefabPath);
+            Object.DestroyImmediate(root);
+        }
+
+        /// <summary>Unlit, alpha-blended, uses vertex colours: what SwordSlash paints into.</summary>
+        private static void BuildSlashMaterial()
+        {
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(SlashMaterialPath);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Sprites/Default"));
+                AssetDatabase.CreateAsset(mat, SlashMaterialPath);
+            }
+            mat.color = Color.white;
+            EditorUtility.SetDirty(mat);
+        }
+
+        private static Material LitMaterial(string name, Color color, Color emission)
+        {
+            string path = $"{Gen}/Materials/{name}.mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            mat.SetColor("_BaseColor", color);
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", emission);
+            EditorUtility.SetDirty(mat);
+            return mat;
         }
 
         /// <summary>
@@ -361,7 +728,9 @@ namespace MistIsles.EditorTools
         [MenuItem("Tools/Mist Isles/2. Set Up Still Shore (Island 1) In Open Scene", priority = 2)]
         public static void SetUpStillShore()
         {
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(CrabPrefabPath) == null)
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(CrabPrefabPath) == null
+                || AssetDatabase.LoadAssetAtPath<GameObject>(SlimePrefabPath) == null
+                || AssetDatabase.LoadAssetAtPath<GameObject>(FragmentPrefabPath) == null)
                 BuildAssets();
 
             GameObject island = GameObject.Find("Island_01");
@@ -377,6 +746,7 @@ namespace MistIsles.EditorTools
             var log = new StringBuilder("[Mist Isles] Still Shore setup:\n");
             var rule = AssetDatabase.LoadAssetAtPath<IslandRule>(RulePath);
 
+            RemoveKraken(log);
             SetUpSystems(log);
             SetUpPlayer(player, log);
             SetUpOcean(log);
@@ -389,17 +759,13 @@ namespace MistIsles.EditorTools
             Vector3 anchor = NearestNavMeshPoint(card.transform.position, 40f) ?? NearestNavMeshPoint(player.transform.position, 10f) ?? island.transform.position;
             Vector3 playerStart = player.transform.position;
 
-            Transform enemies = Child(island.transform, "MistIsles_Enemies");
             var crabPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CrabPrefabPath);
-            ClearChildren(enemies);
-            List<Vector3> spots = FindSpots(anchor, 6f, 24f, 5, 5f, playerStart, 8f);
-            foreach (Vector3 p in spots)
-            {
-                var crab = (GameObject)PrefabUtility.InstantiatePrefab(crabPrefab, enemies);
-                crab.transform.SetPositionAndRotation(p, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f));
-                Undo.RegisterCreatedObjectUndo(crab, "Mist Crab");
-            }
-            log.AppendLine($"  Mist Crabs placed: {spots.Count}");
+            var slimePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(SlimePrefabPath);
+            var turtlePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(TurtlePrefabPath);
+            var fragmentPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(FragmentPrefabPath);
+
+            // The old hand-placed crabs are replaced by camps.
+            ClearChildren(Child(island.transform, "MistIsles_Enemies"));
 
             Transform guardianParent = Child(island.transform, "MistIsles_Guardian");
             ClearChildren(guardianParent);
@@ -414,17 +780,62 @@ namespace MistIsles.EditorTools
             Transform respawn = Child(island.transform, "MistIsles_Respawn");
             respawn.SetPositionAndRotation(playerStart, player.transform.rotation);
 
+            // ---- exploration: camps spread over the island + one hidden fragment
+            List<Vector3> walkable = WalkablePoints(area, playerStart, log);
+            var taken = new List<Vector3> { playerStart, anchor, arena };
+            Transform campsRoot = Child(island.transform, "MistIsles_Camps");
+            ClearChildren(campsRoot);
+            var compositions = new[]
+            {
+                ("Tide Pools", new[] { slimePrefab, slimePrefab, crabPrefab }),
+                ("Old Campfire", new[] { slimePrefab, turtlePrefab, slimePrefab }),
+                ("Rock Garden", new[] { turtlePrefab, crabPrefab, slimePrefab }),
+            };
+            int camps = 0;
+            foreach (var (campName, mobs) in compositions)
+            {
+                Vector3? spot = FarthestFrom(walkable, taken, 7f);
+                if (spot == null)
+                    break;
+                taken.Add(spot.Value);
+                var campGo = new GameObject("Camp_" + campName.Replace(" ", ""));
+                Undo.RegisterCreatedObjectUndo(campGo, "Camp");
+                campGo.transform.SetParent(campsRoot, false);
+                campGo.transform.position = spot.Value;
+                MobCamp camp = campGo.AddComponent<MobCamp>();
+                camp.Configure(campName, mobs, mobs.Length, 4.5f, fragmentPrefab);
+                camps++;
+                log.AppendLine($"  Camp '{campName}' at {spot.Value}");
+            }
+
+            Transform hiddenRoot = Child(island.transform, "MistIsles_HiddenFragment");
+            ClearChildren(hiddenRoot);
+            int hidden = 0;
+            Vector3? hiddenSpot = FarthestFrom(walkable, taken, 4f);
+            if (hiddenSpot != null)
+            {
+                var frag = (GameObject)PrefabUtility.InstantiatePrefab(fragmentPrefab, hiddenRoot);
+                frag.transform.position = hiddenSpot.Value + Vector3.up * 0.3f;
+                Undo.RegisterCreatedObjectUndo(frag, "Hidden fragment");
+                hidden = 1;
+                log.AppendLine($"  Hidden map fragment at {hiddenSpot.Value}");
+            }
+            int fragments = Mathf.Min(3, camps + hidden);
+            if (camps < 3)
+                log.AppendLine($"  WARNING: only {camps} camp spot(s) found. Fragments required lowered to {fragments}. You can add more camps by duplicating one.");
+
             IslandController controller = GetOrAdd<IslandController>(island);
             IslandMist mist = SetUpMist(island, area);
             RaftTravel raft = SetUpRaft(island, island2, area, log);
 
             Undo.RecordObject(controller, "Configure island");
             controller.Configure("Still Shore", rule, guardianGo.GetComponent<ShoreGuardian>(), mist, raft, respawn, area);
+            controller.ConfigureExploration(card, fragments, new[] { slimePrefab, crabPrefab, slimePrefab }, 3);
             EditorUtility.SetDirty(controller);
 
             EditorSceneManager.MarkSceneDirty(island.scene);
             Selection.activeGameObject = island;
-            log.AppendLine("Done. Save the scene (Ctrl+S), then press Play. Move crabs/guardian/raft in the scene view if a spot looks wrong.");
+            log.AppendLine("Done. Save the scene (Ctrl+S), then press Play. Move camps/guardian/raft in the scene view if a spot looks wrong.");
             Debug.Log(log.ToString());
         }
 
@@ -440,7 +851,11 @@ namespace MistIsles.EditorTools
             GetOrAdd<Wallet>(sys);
             GetOrAdd<GameHUD>(sys);
             GetOrAdd<PauseMenu>(sys);
-            GetOrAdd<ShopUI>(sys);
+            ShopUI shop = GetOrAdd<ShopUI>(sys);
+            // empty list = ShopCatalog defaults (rebalanced for the 100 HP health bar)
+            var shopSo = new SerializedObject(shop);
+            shopSo.FindProperty("items").arraySize = 0;
+            shopSo.ApplyModifiedProperties();
 
             var so = new SerializedObject(audio);
             SerializedProperty effects = so.FindProperty("effects");
@@ -467,13 +882,25 @@ namespace MistIsles.EditorTools
         private static void SetUpPlayer(GameObject player, StringBuilder log)
         {
             Health h = GetOrAdd<Health>(player);
-            SetField(h, "maxHealth", 5);
-            SetField(h, "invulnerableAfterHit", 0.8f);
+            SetField(h, "maxHealth", 100);
+            SetField(h, "invulnerableAfterHit", 0.6f);
             GetOrAdd<PlayerMotionTracker>(player);
-            GetOrAdd<PlayerCombat>(player);
+            PlayerCombat combat = GetOrAdd<PlayerCombat>(player);
+            SetField(combat, "slashMaterial", AssetDatabase.LoadAssetAtPath<Material>(SlashMaterialPath));
+            // reach / damage use the script defaults (wider than before)
+            SetField(combat, "damage", 10);
+            SetField(combat, "reach", 1.8f);
+            SetField(combat, "hitRadius", 1.5f);
+            SetField(combat, "autoAimRadius", 4.5f);
             GetOrAdd<PlayerRespawn>(player);
             if (player.GetComponent<StarterAssets.StarterAssetsInputs>() != null)
                 GetOrAdd<PlayerInputBlocker>(player);
+            if (player.GetComponent<StarterAssets.ThirdPersonController>() != null)
+            {
+                // water counts as ground, steadier edges, climbing ledges / out of the sea
+                GetOrAdd<PlayerGroundingAssist>(player);
+                log.AppendLine("  Player grounding assist added (stand on water, climb ledges up to 1.9 m from the sea).");
+            }
 
             var ctrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(PlayerControllerPath);
             Animator visual = player.GetComponentsInChildren<Animator>(true).FirstOrDefault(a => a.isActiveAndEnabled && a.avatar != null && a.avatar.isHuman);
@@ -536,10 +963,21 @@ namespace MistIsles.EditorTools
             for (int i = 0; i < text.Length; i++)
                 answers.GetArrayElementAtIndex(i).stringValue = text[i];
             so.FindProperty("correctAnswerIndex").intValue = 0;
-            so.FindProperty("hint").stringValue = "Stop walking and watch the crabs closely.";
+            so.FindProperty("hint").stringValue = "Stop walking and watch the creatures closely.";
             so.FindProperty("wrongAnswerLockSeconds").floatValue = 3f;
+
+            // Rule builder: 3 x 4 x 4 = 48 possible rules, so guessing is not practical.
+            so.FindProperty("ruleIntro").stringValue = "Write down the law that governs Still Shore. A wrong rule angers the mist.";
+            SetStrings(so.FindProperty("ruleSubjects"), "The palm trees", "The creatures", "The waves");
+            SetStrings(so.FindProperty("ruleActions"), "attack", "heal", "move", "turn invisible");
+            SetStrings(so.FindProperty("ruleConditions"), "only at night", "only near the water", "only when you move", "only when you attack");
+            so.FindProperty("correctSubject").intValue = 1;
+            so.FindProperty("correctAction").intValue = 2;
+            so.FindProperty("correctCondition").intValue = 2;
+            so.FindProperty("wrongAnswerDamage").intValue = 15;
+            so.FindProperty("ambushOnWrongAnswer").boolValue = true;
             so.ApplyModifiedProperties();
-            log.AppendLine($"  Card '{card.name}' text set (answer 1 is correct).");
+            log.AppendLine($"  Card '{card.name}': rule builder set (The creatures / move / only when you move).");
         }
 
         private static Bounds IslandBounds(GameObject island)
@@ -725,26 +1163,90 @@ namespace MistIsles.EditorTools
 
         // ================================================================== helpers
 
-        private static List<Vector3> FindSpots(Vector3 anchor, float minR, float maxR, int count, float spacing, Vector3 avoid, float avoidRadius)
+        /// <summary>
+        /// Walkable points on a 1.5 m grid over the island, read from the baked NavMesh. Points
+        /// the player cannot walk to (separate NavMesh islands, rooftops) are dropped when
+        /// enough reachable points exist.
+        /// </summary>
+        private static List<Vector3> WalkablePoints(Bounds area, Vector3 playerStart, StringBuilder log)
         {
-            var result = new List<Vector3>();
-            var rng = new System.Random(1234);
-            for (int attempt = 0; attempt < 400 && result.Count < count; attempt++)
+            const float step = 1.5f;
+            var all = new List<Vector3>();
+            for (float x = area.min.x; x <= area.max.x; x += step)
+                for (float z = area.min.z; z <= area.max.z; z += step)
+                {
+                    var probe = new Vector3(x, area.center.y, z);
+                    if (!NavMesh.SamplePosition(probe, out NavMeshHit hit, area.extents.y, NavMesh.AllAreas))
+                        continue;
+                    if (new Vector2(hit.position.x - x, hit.position.z - z).magnitude > step * 0.5f)
+                        continue;
+                    all.Add(hit.position);
+                }
+            Vector3? start = NearestNavMeshPoint(playerStart, 12f);
+            List<Vector3> reachable = start == null ? new List<Vector3>() : all.Where(p => Reachable(start.Value, p)).ToList();
+            log.AppendLine($"  Walkable grid points: {all.Count} ({reachable.Count} reachable from the start)");
+            return reachable.Count >= 12 ? reachable : all;
+        }
+
+        /// <summary>The candidate farthest (on the ground plane) from everything already placed.</summary>
+        private static Vector3? FarthestFrom(List<Vector3> candidates, List<Vector3> taken, float minDistance)
+        {
+            Vector3? best = null;
+            float bestD = minDistance;
+            foreach (Vector3 c in candidates)
             {
-                double a = rng.NextDouble() * Mathf.PI * 2f;
-                float r = Mathf.Lerp(minR, maxR, (float)rng.NextDouble());
-                Vector3 p = anchor + new Vector3(Mathf.Cos((float)a), 0f, Mathf.Sin((float)a)) * r;
-                if (!NavMesh.SamplePosition(p, out NavMeshHit hit, 4f, NavMesh.AllAreas))
-                    continue;
-                if (!Reachable(anchor, hit.position))
-                    continue;
-                if (Vector3.Distance(hit.position, avoid) < avoidRadius)
-                    continue;
-                if (result.Any(q => Vector3.Distance(q, hit.position) < spacing))
-                    continue;
-                result.Add(hit.position);
+                float d = taken.Count == 0 ? float.MaxValue : taken.Min(t => new Vector2(c.x - t.x, c.z - t.z).magnitude);
+                if (d > bestD)
+                {
+                    bestD = d;
+                    best = c;
+                }
             }
-            return result;
+            return best;
+        }
+
+        private static void SetStrings(SerializedProperty array, params string[] values)
+        {
+            array.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+                array.GetArrayElementAtIndex(i).stringValue = values[i];
+        }
+
+        /// <summary>
+        /// The Kraken is the final boss of island 3, so it is taken out of the scene. Its prefab
+        /// and scripts stay in Assets/MistIsles/Bosses/Kraken. Found by type name, so this tool
+        /// does not depend on the Kraken scripts.
+        /// </summary>
+        [MenuItem("Tools/Mist Isles/Remove Kraken From Open Scene", priority = 20)]
+        public static void RemoveKrakenMenu()
+        {
+            var log = new StringBuilder();
+            RemoveKraken(log);
+            Debug.Log("[Mist Isles]" + (log.Length > 0 ? "\n" + log : " No Kraken in the open scene."));
+        }
+
+        private static void RemoveKraken(StringBuilder log)
+        {
+            var roots = new HashSet<GameObject>();
+            foreach (MonoBehaviour mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (mb == null || !mb.GetType().Name.StartsWith("Kraken"))
+                    continue;
+                GameObject root = PrefabUtility.GetOutermostPrefabInstanceRoot(mb.gameObject);
+                if (root == null)
+                {
+                    Transform t = mb.transform;
+                    while (t.parent != null && t.parent.name.StartsWith("Kraken"))
+                        t = t.parent;
+                    root = t.gameObject;
+                }
+                roots.Add(root);
+            }
+            foreach (GameObject r in roots)
+            {
+                log.AppendLine($"  Removed '{r.name}' from the scene (the Kraken returns as the island 3 boss).");
+                Undo.DestroyObjectImmediate(r);
+            }
         }
 
         private static Vector3? FindArena(Vector3 anchor, Vector3 avoid)

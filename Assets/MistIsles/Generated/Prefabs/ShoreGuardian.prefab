@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bdcdefbba6971e4ca850d8c6eeb07a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Core.Health
-  maxHealth: 10
+  maxHealth: 120
   invulnerableAfterHit: 0
 --- !u!114 &4900780684875337256
 MonoBehaviour:
@@ -115,7 +115,8 @@ MonoBehaviour:
   phaseTwoSpeedMultiplier: 1.35
   turnSpeed: 240
   attackRange: 3.2
-  attackDamage: 1
+  clawDamage: 20
+  slamDamage: 30
   attackCooldown: 1.8
   attackHitMoment: 0.5
   attackDuration: 1.1
@@ -128,6 +129,7 @@ MonoBehaviour:
   tremorStillTimePhaseTwo: 3
   tremorWindup: 1.1
   tremorRadius: 9
+  tremorDamage: 15
   minionPrefab: {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
   minionCount: 2
 --- !u!1001 &7788280290688768606

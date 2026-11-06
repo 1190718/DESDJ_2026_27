@@ -12,8 +12,9 @@ namespace MistIsles.UI
 {
     /// <summary>
     /// In-game HUD, built in code on Awake:
-    /// hearts and shells (top left), objective (top right), island banner and boss bar (top
-    /// centre), toasts (lower centre), interaction prompt (bottom), a red flash when hurt, and
+    /// health bar, shells and map fragments (top left), objective (top right), island banner
+    /// and boss bar (top centre), toasts (lower centre), interaction prompt (bottom), a red
+    /// flash when hurt, floating damage numbers, small health bars over wounded enemies, and
     /// the end-of-prototype card. Other systems use the static methods (Toast, Banner, ...).
     /// </summary>
     public class GameHUD : MonoBehaviour
@@ -23,12 +24,19 @@ namespace MistIsles.UI
         public static readonly Color Good = new Color(0.49f, 0.88f, 0.63f);
         public static readonly Color Danger = new Color(1f, 0.45f, 0.38f);
         public static readonly Color Neutral = new Color(0.95f, 0.93f, 0.88f);
+        public static readonly Color DealtColor = new Color(1f, 0.84f, 0.35f);
 
         [SerializeField] private bool showControlsOnStart = true;
 
-        private readonly List<Image> hearts = new List<Image>();
-        private RectTransform heartRow;
+        private Image hpFill, hpChip;
+        private TextMeshProUGUI hpText;
+        private float hpShown = 1f, hpChipShown = 1f, hpChipHold;
         private TextMeshProUGUI shellText;
+        private GameObject fragmentRow;
+        private TextMeshProUGUI fragmentText;
+        private RectTransform worldLayer;
+        private readonly List<FloatingNumber> numbers = new List<FloatingNumber>();
+        private readonly List<EnemyBar> enemyBars = new List<EnemyBar>();
         private TextMeshProUGUI objectiveText;
         private CanvasGroup bannerGroup;
         private TextMeshProUGUI bannerTitle, bannerSub;
@@ -49,6 +57,23 @@ namespace MistIsles.UI
         private Health bossHealth;
         private Func<bool> bossVulnerable;
         private float flash;
+
+        private class FloatingNumber
+        {
+            public TextMeshProUGUI text;
+            public Vector3 world;
+            public float age, life;
+            public bool active;
+        }
+
+        private class EnemyBar
+        {
+            public Health health;
+            public float height;
+            public float lastHit = float.NegativeInfinity;
+            public RectTransform root;
+            public Image fill;
+        }
 
         // ------------------------------------------------------------------ static API
 
@@ -90,6 +115,31 @@ namespace MistIsles.UI
             Instance.bossGroup.alpha = 0f;
         }
 
+        /// <summary>Map fragments collected on the current island. need = 0 hides the counter.</summary>
+        public static void SetFragments(int have, int need)
+        {
+            if (Instance == null)
+                return;
+            Instance.fragmentRow.SetActive(need > 0);
+            Instance.fragmentText.text = $"Map fragments  {have} / {need}";
+        }
+
+        /// <summary>Floating number at a world position, e.g. damage dealt or taken.</summary>
+        public static void DamageNumber(Vector3 world, int amount, Color color)
+        {
+            if (Instance == null || amount <= 0)
+                return;
+            Instance.SpawnNumber(world, amount.ToString(), color);
+        }
+
+        /// <summary>Shows a small health bar over this enemy for a few seconds after each hit.</summary>
+        public static void TrackEnemy(Health health, float height)
+        {
+            if (Instance == null || health == null)
+                return;
+            Instance.AddEnemyBar(health, height);
+        }
+
         public static void ShowEndCard(string title, string body, string stats)
         {
             if (Instance == null)
@@ -124,9 +174,13 @@ namespace MistIsles.UI
             playerHealth = PlayerLocator.Health;
             if (playerHealth != null)
             {
-                playerHealth.Changed += (cur, max) => RefreshHearts();
-                playerHealth.Damaged += _ => flash = 0.45f;
-                RefreshHearts();
+                playerHealth.Damaged += info =>
+                {
+                    flash = 0.45f;
+                    hpChipHold = 0.5f;
+                    SpawnNumber(PlayerLocator.AimPoint + Vector3.up * 0.9f, "-" + info.Amount, Danger);
+                };
+                hpShown = hpChipShown = (float)playerHealth.Current / playerHealth.Max;
             }
             if (Wallet.Instance != null)
             {
@@ -146,6 +200,10 @@ namespace MistIsles.UI
             flash = Mathf.Max(0f, flash - Time.unscaledDeltaTime);
             damageFlash.color = new Color(0.8f, 0.05f, 0.05f, flash * 0.6f);
 
+            UpdateHealthBar();
+            UpdateNumbers();
+            UpdateEnemyBars();
+
             if (bossHealth != null)
             {
                 bossFill.fillAmount = Mathf.MoveTowards(bossFill.fillAmount, (float)bossHealth.Current / bossHealth.Max, Time.deltaTime);
@@ -159,20 +217,141 @@ namespace MistIsles.UI
 
         private void OnShellsChanged(int amount) => shellText.text = amount.ToString();
 
-        private void RefreshHearts()
+        // ------------------------------------------------------------------ health bar
+
+        /// <summary>
+        /// The red fill follows health quickly; a pale "chip" behind it holds for half a second
+        /// and then drains, so the player can read how big the last hit was.
+        /// </summary>
+        private void UpdateHealthBar()
         {
             if (playerHealth == null)
+            {
+                playerHealth = PlayerLocator.Health;
                 return;
-            while (hearts.Count < playerHealth.Max)
-            {
-                Image h = UIFactory.Icon("Heart", heartRow, UIFactory.HeartSprite, UIFactory.Heart, new Vector2(0f, 0.5f), new Vector2(22f + hearts.Count * 50f, 0f), 44f);
-                hearts.Add(h);
             }
-            for (int i = 0; i < hearts.Count; i++)
+            float target = (float)playerHealth.Current / playerHealth.Max;
+            float dt = Time.unscaledDeltaTime;
+            hpShown = Mathf.MoveTowards(hpShown, target, dt * 2.5f);
+            if (target > hpChipShown)
+                hpChipShown = hpShown; // healing: chip follows the fill
+            else if ((hpChipHold -= dt) <= 0f)
+                hpChipShown = Mathf.MoveTowards(hpChipShown, target, dt * 0.8f);
+            hpFill.fillAmount = hpShown;
+            hpChip.fillAmount = hpChipShown;
+            hpFill.color = target > 0.3f ? UIFactory.Heart : Color.Lerp(UIFactory.Heart, Color.white, 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 8f));
+            hpText.text = $"{playerHealth.Current} / {playerHealth.Max}";
+        }
+
+        // ------------------------------------------------------------------ floating numbers
+
+        private void SpawnNumber(Vector3 world, string text, Color color)
+        {
+            FloatingNumber n = numbers.Find(x => !x.active);
+            if (n == null)
             {
-                hearts[i].gameObject.SetActive(i < playerHealth.Max);
-                hearts[i].color = i < playerHealth.Current ? UIFactory.Heart : UIFactory.HeartEmpty;
+                n = new FloatingNumber();
+                n.text = UIFactory.Text("Number", worldLayer, "", 34, TextAlignmentOptions.Center, color, FontStyles.Bold);
+                RectTransform rt = n.text.rectTransform;
+                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.sizeDelta = new Vector2(200f, 60f);
+                n.text.outlineWidth = 0.25f;
+                n.text.outlineColor = new Color32(10, 20, 25, 255);
+                numbers.Add(n);
             }
+            n.text.text = text;
+            n.text.color = color;
+            n.world = world + new Vector3(UnityEngine.Random.Range(-0.3f, 0.3f), 0f, UnityEngine.Random.Range(-0.3f, 0.3f));
+            n.age = 0f;
+            n.life = 0.9f;
+            n.active = true;
+            n.text.gameObject.SetActive(true);
+        }
+
+        private void UpdateNumbers()
+        {
+            foreach (FloatingNumber n in numbers)
+            {
+                if (!n.active)
+                    continue;
+                n.age += Time.unscaledDeltaTime;
+                if (n.age >= n.life)
+                {
+                    n.active = false;
+                    n.text.gameObject.SetActive(false);
+                    continue;
+                }
+                float k = n.age / n.life;
+                if (!Place(n.text.rectTransform, n.world + Vector3.up * (k * 1.2f)))
+                    continue;
+                Color c = n.text.color;
+                c.a = 1f - k * k;
+                n.text.color = c;
+                n.text.rectTransform.localScale = Vector3.one * (k < 0.15f ? Mathf.Lerp(1.6f, 1f, k / 0.15f) : 1f);
+            }
+        }
+
+        // ------------------------------------------------------------------ enemy bars
+
+        private void AddEnemyBar(Health health, float height)
+        {
+            var bar = new EnemyBar { health = health, height = height };
+            bar.root = UIFactory.Rect("EnemyBar", worldLayer, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(110f, 14f));
+            UIFactory.AddPanel(bar.root, new Color(0f, 0f, 0f, 0.6f), false);
+            RectTransform f = UIFactory.Stretch("Fill", bar.root);
+            f.offsetMin = new Vector2(2f, 2f);
+            f.offsetMax = new Vector2(-2f, -2f);
+            bar.fill = f.gameObject.AddComponent<Image>();
+            bar.fill.sprite = UIFactory.WhiteSprite;
+            bar.fill.color = UIFactory.Heart;
+            bar.fill.type = Image.Type.Filled;
+            bar.fill.fillMethod = Image.FillMethod.Horizontal;
+            bar.root.gameObject.SetActive(false);
+            health.Damaged += info =>
+            {
+                bar.lastHit = Time.time;
+                // damage you deal: gold, over the enemy's head (damage you take is red with a minus sign)
+                SpawnNumber(health.transform.position + Vector3.up * (height + 0.35f), info.Amount.ToString(), DealtColor);
+            };
+            enemyBars.Add(bar);
+        }
+
+        private void UpdateEnemyBars()
+        {
+            for (int i = enemyBars.Count - 1; i >= 0; i--)
+            {
+                EnemyBar b = enemyBars[i];
+                if (b.health == null)
+                {
+                    if (b.root != null)
+                        Destroy(b.root.gameObject);
+                    enemyBars.RemoveAt(i);
+                    continue;
+                }
+                bool show = !b.health.IsDead && Time.time - b.lastHit < 4f
+                            && Place(b.root, b.health.transform.position + Vector3.up * b.height);
+                b.root.gameObject.SetActive(show);
+                if (show)
+                    b.fill.fillAmount = (float)b.health.Current / b.health.Max;
+            }
+        }
+
+        /// <summary>Moves a HUD element over a world position. Returns false if it is behind the camera.</summary>
+        private bool Place(RectTransform rt, Vector3 world)
+        {
+            Camera cam = Camera.main;
+            if (cam == null)
+                return false;
+            Vector3 screen = cam.WorldToScreenPoint(world);
+            if (screen.z <= 0f)
+            {
+                rt.gameObject.SetActive(false);
+                return false;
+            }
+            rt.gameObject.SetActive(true);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(worldLayer, screen, null, out Vector2 local);
+            rt.anchoredPosition = local;
+            return true;
         }
 
         // ------------------------------------------------------------------ toasts and banner
@@ -241,13 +420,29 @@ namespace MistIsles.UI
             damageFlash.color = Color.clear;
             damageFlash.raycastTarget = false;
 
-            // hearts + shells, top left
-            RectTransform status = UIFactory.Rect("Status", root, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(32f, -28f), new Vector2(330f, 120f));
+            // world-anchored elements (damage numbers, enemy bars) live under the rest of the HUD
+            worldLayer = UIFactory.Stretch("WorldLayer", root);
+
+            // health bar + shells + fragments, top left
+            RectTransform status = UIFactory.Rect("Status", root, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(32f, -28f), new Vector2(440f, 150f));
             UIFactory.AddPanel(status, UIFactory.Panel);
-            heartRow = UIFactory.Rect("Hearts", status, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(14f, -12f), new Vector2(300f, 48f));
-            UIFactory.Icon("ShellIcon", status, UIFactory.CircleSprite, UIFactory.Shell, new Vector2(0f, 0f), new Vector2(36f, 32f), 30f);
-            RectTransform shellRt = UIFactory.Rect("Shells", status, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(62f, 12f), new Vector2(240f, 40f));
+            UIFactory.Icon("HeartIcon", status, UIFactory.HeartSprite, UIFactory.Heart, new Vector2(0f, 1f), new Vector2(36f, -38f), 36f);
+            RectTransform hpBg = UIFactory.Rect("HealthBar", status, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(64f, -20f), new Vector2(356f, 36f));
+            UIFactory.AddPanel(hpBg, new Color(0f, 0f, 0f, 0.55f));
+            hpChip = BarFill(hpBg, "Chip", new Color(1f, 0.9f, 0.75f, 0.85f));
+            hpFill = BarFill(hpBg, "Fill", UIFactory.Heart);
+            hpText = UIFactory.Text("Value", hpBg, "", 22, TextAlignmentOptions.Center, UIFactory.Ink, FontStyles.Bold);
+            hpText.outlineWidth = 0.2f;
+            hpText.outlineColor = new Color32(10, 20, 25, 255);
+
+            UIFactory.Icon("ShellIcon", status, UIFactory.CircleSprite, UIFactory.Shell, new Vector2(0f, 1f), new Vector2(36f, -86f), 28f);
+            RectTransform shellRt = UIFactory.Rect("Shells", status, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(64f, -66f), new Vector2(200f, 40f));
             shellText = UIFactory.Text("Amount", shellRt, "0", 30, TextAlignmentOptions.Left, UIFactory.Shell, FontStyles.Bold);
+
+            RectTransform frag = UIFactory.Rect("Fragments", status, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(20f, -108f), new Vector2(400f, 34f));
+            fragmentText = UIFactory.Text("Text", frag, "", 22, TextAlignmentOptions.Left, UIFactory.Parchment, FontStyles.Bold);
+            fragmentRow = frag.gameObject;
+            fragmentRow.SetActive(false);
 
             // objective, top right
             RectTransform obj = UIFactory.Rect("Objective", root, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-32f, -28f), new Vector2(560f, 110f));
@@ -276,6 +471,7 @@ namespace MistIsles.UI
             barFill.offsetMin = new Vector2(4f, 4f);
             barFill.offsetMax = new Vector2(-4f, -4f);
             bossFill = barFill.gameObject.AddComponent<Image>();
+            bossFill.sprite = UIFactory.WhiteSprite;
             bossFill.color = UIFactory.Heart;
             bossFill.type = Image.Type.Filled;
             bossFill.fillMethod = Image.FillMethod.Horizontal;
@@ -299,6 +495,21 @@ namespace MistIsles.UI
             promptText = UIFactory.Text("Text", prompt, "", 28, TextAlignmentOptions.Center, new Color(0.05f, 0.1f, 0.12f), FontStyles.Bold);
 
             BuildEndCard(root);
+        }
+
+        private static Image BarFill(RectTransform parent, string name, Color color)
+        {
+            RectTransform rt = UIFactory.Stretch(name, parent);
+            rt.offsetMin = new Vector2(4f, 4f);
+            rt.offsetMax = new Vector2(-4f, -4f);
+            Image img = rt.gameObject.AddComponent<Image>();
+            img.sprite = UIFactory.WhiteSprite;
+            img.color = color;
+            img.type = Image.Type.Filled;
+            img.fillMethod = Image.FillMethod.Horizontal;
+            img.fillAmount = 1f;
+            img.raycastTarget = false;
+            return img;
         }
 
         private void BuildEndCard(Transform root)

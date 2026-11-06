@@ -36,7 +36,7 @@ namespace MistIsles.UI
 
         private void Update()
         {
-            if (!toggle.WasPressedThisFrame())
+            if (!toggle.WasPressedThisFrame() || Time.frameCount == QuizUI.LastClosedFrame)
                 return;
             if (IsOpen)
                 Close();
