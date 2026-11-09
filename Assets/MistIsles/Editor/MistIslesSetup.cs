@@ -1076,6 +1076,7 @@ namespace MistIsles.EditorTools
             visual.transform.position = new Vector3(shore.x, waterY + 0.15f, shore.z) + dir * 3f;
             visual.transform.rotation = Quaternion.LookRotation(dir);
 
+            EnsureColliders(island2, log);
             Transform landing = Child(island.transform, "MistIsles_Island2_Landing");
             landing.position = FindLanding(island2, centre) ?? target + Vector3.up * 3f;
             Vector3 back = centre - landing.position;
@@ -1084,10 +1085,31 @@ namespace MistIsles.EditorTools
 
             RaftTravel raft = GetOrAdd<RaftTravel>(raftRoot.gameObject);
             Undo.RecordObject(raft, "Raft");
-            raft.Configure(landing, "Whispering Pines", visual);
+            raft.Configure(landing, "Whispering Pines", visual, "Still Shore");
             EditorUtility.SetDirty(raft);
             log.AppendLine($"  Raft at {shore}; landing on Island_02 at {landing.position} (move 'MistIsles_Island2_Landing' if needed).");
             return raft;
+        }
+
+        /// <summary>
+        /// Island_02 is only scenery for now; without colliders the player would fall through
+        /// it after sailing. Gives every mesh without a collider a MeshCollider (static scenery).
+        /// </summary>
+        private static void EnsureColliders(GameObject island2, StringBuilder log)
+        {
+            if (island2 == null)
+                return;
+            int added = 0;
+            foreach (MeshFilter mf in island2.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null || mf.GetComponent<Collider>() != null || mf.GetComponentInParent<Checkpoint>() != null)
+                    continue;
+                var col = Undo.AddComponent<MeshCollider>(mf.gameObject);
+                col.sharedMesh = mf.sharedMesh;
+                added++;
+            }
+            if (added > 0)
+                log.AppendLine($"  Island_02: added {added} mesh colliders so the player can walk on it.");
         }
 
         private static Vector3? FindLanding(GameObject island2, Vector3 fromCentre)
