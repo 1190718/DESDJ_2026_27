@@ -64,7 +64,6 @@ namespace MistIsles.World
         private int fragmentsTarget = -1;
         private bool retrying;
         private float nextBoundaryToast;
-        private CharacterController playerController;
 
         public static IslandController PlayerIsland { get; private set; }
         public static event Action<IslandController> PlayerEnteredIsland;
@@ -103,9 +102,11 @@ namespace MistIsles.World
                     default:
                         if (raft == null)
                             return "Island cleared";
+                        if (raft.Aboard)
+                            return $"Steer the raft with WASD towards {raft.DestinationName}. Press E near a shore to step off.";
                         return raft.AtFarShore
-                            ? $"Explore {raft.DestinationName}. The raft waits on its shore to take you back."
-                            : $"Board the raft on the shore (E) to sail to {raft.DestinationName}";
+                            ? $"Explore {raft.DestinationName}. Your raft waits on the water to take you back."
+                            : $"Board the raft by the shore (E) and sail to {raft.DestinationName}";
                 }
             }
         }
@@ -298,37 +299,16 @@ namespace MistIsles.World
 
         // ------------------------------------------------------------------ boundary
 
-        /// <summary>
-        /// While this island is not cleared, the player is kept inside its area (the island plus
-        /// a strip of water around it). Runs after the character controller has moved.
-        /// </summary>
-        private void LateUpdate()
+        /// <summary>True while the player must stay inside this island's area (enforced by PlayerBoundary).</summary>
+        public bool ConfinesPlayer => confinePlayerUntilCleared && State != IslandState.Cleared;
+
+        /// <summary>PlayerBoundary calls this when it stops the player at the edge.</summary>
+        public void NotifyBoundaryHit()
         {
-            if (!confinePlayerUntilCleared || State == IslandState.Cleared || PlayerIsland != this)
+            if (Time.time < nextBoundaryToast)
                 return;
-            Transform p = PlayerLocator.Player;
-            if (p == null)
-                return;
-            Vector3 pos = p.position;
-            const float margin = 0.5f;
-            float x = Mathf.Clamp(pos.x, area.min.x + margin, area.max.x - margin);
-            float z = Mathf.Clamp(pos.z, area.min.z + margin, area.max.z - margin);
-            if (x == pos.x && z == pos.z)
-                return;
-
-            Vector3 push = new Vector3(x - pos.x, 0f, z - pos.z);
-            if (playerController == null || playerController.transform != p)
-                playerController = p.GetComponent<CharacterController>();
-            if (playerController != null && playerController.enabled)
-                playerController.Move(push);
-            else
-                p.position += push;
-
-            if (Time.time >= nextBoundaryToast)
-            {
-                nextBoundaryToast = Time.time + 4f;
-                GameHUD.Toast($"A wall of mist pushes you back. Free {islandName} before sailing on.", GameHUD.Neutral, 3f);
-            }
+            nextBoundaryToast = Time.time + 4f;
+            GameHUD.Toast($"A wall of mist pushes you back. Free {islandName} before sailing on.", GameHUD.Neutral, 3f);
         }
 
         // ------------------------------------------------------------------ death reset
