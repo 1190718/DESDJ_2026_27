@@ -39,10 +39,14 @@ namespace MistIsles.Player
         [Header("Ledge climb")]
         [Tooltip("Highest ledge the player can climb when standing in the water.")]
         [SerializeField] private float maxClimbFromWater = 1.9f;
-        [Tooltip("Highest ledge the player can climb on land (keeps rocks from being trivial).")]
+        [Tooltip("Also climb ledges on land. Off by default: on rocky shores it fired again and again and the player seemed to teleport.")]
+        [SerializeField] private bool climbOnLand = false;
+        [Tooltip("Highest ledge the player can climb on land (only if Climb On Land is on).")]
         [SerializeField] private float maxClimbOnLand = 1.1f;
-        [Tooltip("Seconds of pushing against a ledge before climbing.")]
-        [SerializeField] private float pushTime = 0.12f;
+        [Tooltip("Seconds of pushing straight against a ledge before climbing.")]
+        [SerializeField] private float pushTime = 0.3f;
+        [Tooltip("Seconds after a climb before another one can start.")]
+        [SerializeField] private float climbCooldown = 1f;
         [SerializeField] private float climbSecondsPerMetre = 0.22f;
 
         private ThirdPersonController tpc;
@@ -53,6 +57,7 @@ namespace MistIsles.Player
         private float lastGroundedTime = float.NegativeInfinity;
         private float pushing;
         private bool climbing;
+        private float nextClimb;
 
         private static readonly int GroundedId = Animator.StringToHash("Grounded");
         private static readonly int JumpId = Animator.StringToHash("Jump");
@@ -80,7 +85,7 @@ namespace MistIsles.Player
 
         private void Update()
         {
-            if (tpc == null || climbing)
+            if (tpc == null || climbing || MistIsles.World.RaftTravel.PlayerAboard)
                 return;
 
             // ---- 1. grounding
@@ -104,7 +109,7 @@ namespace MistIsles.Player
             }
             Vector3 v = controller.velocity;
             v.y = 0f;
-            if (v.magnitude > tpc.MoveSpeed * 0.45f || !FindLedge(out Vector3 top))
+            if (Time.time < nextClimb || v.magnitude > tpc.MoveSpeed * 0.3f || !FindLedge(out Vector3 top))
             {
                 pushing = 0f;
                 return;
@@ -133,13 +138,21 @@ namespace MistIsles.Player
             Vector3 fwd = transform.forward;
             fwd.y = 0f;
             fwd.Normalize();
-            float maxClimb = InWater() ? maxClimbFromWater : maxClimbOnLand;
+            bool inWater = InWater();
+            if (!inWater && !climbOnLand)
+                return false;
+            float maxClimb = inWater ? maxClimbFromWater : maxClimbOnLand;
 
             // wall at knee height in front of us
             Vector3 knee = transform.position + Vector3.up * (stepOffset + 0.1f);
             if (!Physics.SphereCast(knee, r * 0.9f, fwd, out RaycastHit wall, 0.5f, ~0, QueryTriggerInteraction.Ignore))
                 return false;
             if (IsMine(wall.collider) || wall.normal.y > 0.7f || wall.collider.GetComponentInParent<Health>() != null)
+                return false;
+            // only when facing the wall, not when brushing along it
+            Vector3 into = -wall.normal;
+            into.y = 0f;
+            if (into.sqrMagnitude < 0.01f || Vector3.Dot(into.normalized, fwd) < 0.7f)
                 return false;
 
             // walkable surface on top of it
@@ -213,6 +226,7 @@ namespace MistIsles.Player
                 animator.SetBool(GroundedId, true);
             }
             climbing = false;
+            nextClimb = Time.time + climbCooldown;
         }
 
         private void OnDisable()

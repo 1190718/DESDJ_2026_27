@@ -7,20 +7,32 @@ using UnityEngine.Rendering.Universal;
 namespace MistIsles.World
 {
     /// <summary>
-    /// The visible sign that an island is still "unsolved": a local post-processing volume
-    /// that drains colour, plus fog while the player is on the island. Lift() fades both
-    /// out when the guardian falls, so the player sees the island regain its colour.
+    /// The visible sign that an island is still "unsolved": a sea mist while the player is on it.
+    /// Real coastal mist is bright, not grey: light scatters in it, so it lifts the shadows,
+    /// lowers contrast and takes the colour of the sky. Here that is a local post-processing
+    /// volume (a little brighter, softer contrast, colours only slightly muted, a faint cool
+    /// tint) plus exponential-squared fog in a pale sky blue, so nearby things stay clear and
+    /// the far shore fades into white-blue. Lift() fades both out when the guardian falls.
     /// The volume needs a trigger collider covering the island (the setup tool adds one).
+    ///
+    /// The fields were renamed from the first (too grey) version on purpose: scenes saved with
+    /// the old values pick up the new look without having to run the setup again.
     /// </summary>
     [RequireComponent(typeof(Volume))]
     public class IslandMist : MonoBehaviour
     {
-        [SerializeField, Range(-100f, 0f)] private float saturation = -70f;
-        [SerializeField] private float exposure = -0.35f;
-        [SerializeField] private Color tint = new Color(0.82f, 0.88f, 0.94f);
-        [SerializeField] private float blendDistance = 10f;
-        [SerializeField] private float fogDensity = 0.03f;
-        [SerializeField] private Color fogColor = new Color(0.72f, 0.78f, 0.82f);
+        [Header("Colour grading inside the mist")]
+        [SerializeField, Range(-100f, 0f)] private float mistSaturation = -22f;
+        [Tooltip("Mist scatters light: slightly brighter, not darker.")]
+        [SerializeField] private float mistExposure = 0.12f;
+        [SerializeField, Range(-100f, 0f)] private float mistContrast = -18f;
+        [SerializeField] private Color mistTint = new Color(0.96f, 0.98f, 1f);
+        [SerializeField] private float blendDistance = 12f;
+
+        [Header("Fog")]
+        [Tooltip("Exponential squared: clear up close, thick far away (about 1/density metres of visibility).")]
+        [SerializeField] private float mistFogDensity = 0.018f;
+        [SerializeField] private Color mistFogColor = new Color(0.80f, 0.87f, 0.93f);
         [SerializeField] private float liftSeconds = 4f;
         [SerializeField] private IslandController island;
 
@@ -42,9 +54,10 @@ namespace MistIsles.World
 
             var profile = ScriptableObject.CreateInstance<VolumeProfile>();
             ColorAdjustments ca = profile.Add<ColorAdjustments>(true);
-            ca.saturation.Override(saturation);
-            ca.postExposure.Override(exposure);
-            ca.colorFilter.Override(tint);
+            ca.saturation.Override(mistSaturation);
+            ca.postExposure.Override(mistExposure);
+            ca.contrast.Override(mistContrast);
+            ca.colorFilter.Override(mistTint);
             volume.sharedProfile = profile;
 
             if (island == null)
@@ -78,8 +91,8 @@ namespace MistIsles.World
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             float baseDensity = originalFog ? originalDensity : 0f;
-            RenderSettings.fogDensity = Mathf.Lerp(baseDensity, fogDensity, fogWeight);
-            RenderSettings.fogColor = Color.Lerp(originalColor, fogColor, fogWeight);
+            RenderSettings.fogDensity = Mathf.Lerp(baseDensity, mistFogDensity, fogWeight);
+            RenderSettings.fogColor = Color.Lerp(originalColor, mistFogColor, fogWeight);
         }
 
         public void Lift()

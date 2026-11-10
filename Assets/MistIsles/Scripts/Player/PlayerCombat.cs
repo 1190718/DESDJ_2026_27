@@ -51,6 +51,8 @@ namespace MistIsles.Player
             // Scenes set up before the grounding fix get it automatically (no need to re-run the setup).
             if (GetComponent<StarterAssets.ThirdPersonController>() != null && GetComponent<PlayerGroundingAssist>() == null)
                 gameObject.AddComponent<PlayerGroundingAssist>();
+            if (GetComponent<PlayerBoundary>() == null)
+                gameObject.AddComponent<PlayerBoundary>();
         }
 
         private void Start()
@@ -69,7 +71,7 @@ namespace MistIsles.Player
 
         private void Update()
         {
-            if (GamePause.IsPaused || health.IsDead)
+            if (GamePause.IsPaused || health.IsDead || MistIsles.World.RaftTravel.PlayerAboard)
                 return;
             if (attackAction.WasPressedThisFrame() && Time.time >= nextAttack)
                 StartCoroutine(Attack());
