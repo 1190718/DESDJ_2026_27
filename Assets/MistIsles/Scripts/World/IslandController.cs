@@ -55,6 +55,8 @@ namespace MistIsles.World
         [Header("Boundary")]
         [Tooltip("Keep the player inside this island's area until it is cleared.")]
         [SerializeField] private bool confinePlayerUntilCleared = true;
+        [Tooltip("How far into the sea the player may go from this island's coast before the mist pushes back.")]
+        [SerializeField] private float boundaryWater = 6f;
 
         private static readonly List<IslandController> All = new List<IslandController>();
         private Action onCleared;
@@ -301,6 +303,114 @@ namespace MistIsles.World
 
         /// <summary>True while the player must stay inside this island's area (enforced by PlayerBoundary).</summary>
         public bool ConfinesPlayer => confinePlayerUntilCleared && State != IslandState.Cleared;
+
+        // Boundary mask: a 1 m grid over the island area. A cell is allowed if it is this island's
+        // land (a ray from above first hits a collider that belongs to the island) or sea within
+        // boundaryWater metres of that land. So the limit follows the real coastline, whatever
+        // shape the island has after being edited, and never reaches another island's shore.
+        private const float Cell = 1f;
+        private bool[] allowed;
+        private int gridW, gridH;
+        private float gridX0, gridZ0;
+
+        private void Start() => BuildBoundaryMask();
+
+        /// <summary>Recomputes the boundary (call after moving island pieces at runtime).</summary>
+        public void BuildBoundaryMask()
+        {
+            allowed = null;
+            gridW = Mathf.CeilToInt(area.size.x / Cell) + 1;
+            gridH = Mathf.CeilToInt(area.size.z / Cell) + 1;
+            if (gridW <= 1 || gridH <= 1 || gridW * gridH > 400000)
+                return;
+            gridX0 = area.min.x;
+            gridZ0 = area.min.z;
+
+            var land = new bool[gridW * gridH];
+            int landCells = 0;
+            float top = area.max.y + 5f, length = area.size.y + 30f;
+            for (int iz = 0; iz < gridH; iz++)
+                for (int ix = 0; ix < gridW; ix++)
+                {
+                    var origin = new Vector3(gridX0 + ix * Cell, top, gridZ0 + iz * Cell);
+                    if (IsOwnLand(origin, length))
+                    {
+                        land[iz * gridW + ix] = true;
+                        landCells++;
+                    }
+                }
+            if (landCells < 30)
+            {
+                Debug.LogWarning($"[Mist Isles] {islandName}: only {landCells} land cells found (pieces without colliders?). Using the area box as the boundary.");
+                return;
+            }
+
+            // grow the land by boundaryWater (breadth-first, 8 neighbours)
+            int reach = Mathf.Max(0, Mathf.RoundToInt(boundaryWater / Cell));
+            var dist = new int[land.Length];
+            var queue = new Queue<int>();
+            for (int i = 0; i < land.Length; i++)
+            {
+                dist[i] = land[i] ? 0 : int.MaxValue;
+                if (land[i])
+                    queue.Enqueue(i);
+            }
+            while (queue.Count > 0)
+            {
+                int i = queue.Dequeue();
+                if (dist[i] >= reach)
+                    continue;
+                int x = i % gridW, z = i / gridW;
+                for (int dz = -1; dz <= 1; dz++)
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        int nx = x + dx, nz = z + dz;
+                        if (nx < 0 || nz < 0 || nx >= gridW || nz >= gridH)
+                            continue;
+                        int n = nz * gridW + nx;
+                        if (dist[n] > dist[i] + 1)
+                        {
+                            dist[n] = dist[i] + 1;
+                            queue.Enqueue(n);
+                        }
+                    }
+            }
+            allowed = new bool[land.Length];
+            for (int i = 0; i < land.Length; i++)
+                allowed[i] = dist[i] <= reach;
+        }
+
+        private bool IsOwnLand(Vector3 origin, float length)
+        {
+            RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, length, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            float best = float.MaxValue;
+            Collider first = null;
+            foreach (RaycastHit h in hits)
+            {
+                Collider c = h.collider;
+                if (c.GetComponentInParent<Health>() != null || c.GetComponentInParent<NavMeshAgent>() != null
+                    || c.GetComponentInParent<CharacterController>() != null)
+                    continue; // creatures and the player are not ground
+                if (h.distance < best)
+                {
+                    best = h.distance;
+                    first = c;
+                }
+            }
+            return first != null && first.gameObject.layer != 4 && first.transform.IsChildOf(transform);
+        }
+
+        /// <summary>Whether the player may stand at this point (coast mask, or the area box as a fallback).</summary>
+        public bool IsInsideBoundary(Vector3 p)
+        {
+            if (allowed == null)
+                return area.Contains(new Vector3(p.x, area.center.y, p.z));
+            int ix = Mathf.RoundToInt((p.x - gridX0) / Cell);
+            int iz = Mathf.RoundToInt((p.z - gridZ0) / Cell);
+            if (ix < 0 || iz < 0 || ix >= gridW || iz >= gridH)
+                return false;
+            return allowed[iz * gridW + ix];
+        }
 
         /// <summary>PlayerBoundary calls this when it stops the player at the edge.</summary>
         public void NotifyBoundaryHit()
