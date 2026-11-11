@@ -9559,7 +9559,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1546387783}
+  - {fileID: 1455743536}
   m_Father: {fileID: 1865551780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &397738906 stripped
@@ -10970,63 +10970,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8464000029332216993, guid: 2c67fcaa19e584f4895159bb3b4e9ac1, type: 3}
   m_PrefabInstance: {fileID: 434191249}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &435769920
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 435769921}
-  - component: {fileID: 435769922}
-  m_Layer: 0
-  m_Name: Camp_OldCampfire
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &435769921
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 435769920}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.95, y: 4.05, z: 42.83}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1560587144}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &435769922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 435769920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
-  campName: Old Campfire
-  mobs:
-  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
-  - {fileID: 7919487610665145979, guid: 6127fec470ed8e445a80485dc945812d, type: 3}
-  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
-  firstGroupSize: 3
-  maxAlive: 3
-  radius: 4.5
-  respawnDelay: 30
-  respawnMinPlayerDistance: 14
-  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-  rule: {fileID: 0}
-  retryRegroupDelay: 6
 --- !u!1001 &435869055
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15329,63 +15272,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e67d3e2fdb18d364f943d685c09cb266, type: 3}
---- !u!1 &635657747
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 635657748}
-  - component: {fileID: 635657749}
-  m_Layer: 0
-  m_Name: Camp_TidePools
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &635657748
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 635657747}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.32, y: 2.65, z: 21.86}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1560587144}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &635657749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 635657747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
-  campName: Tide Pools
-  mobs:
-  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
-  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
-  - {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
-  firstGroupSize: 3
-  maxAlive: 3
-  radius: 4.5
-  respawnDelay: 30
-  respawnMinPlayerDistance: 14
-  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-  rule: {fileID: 0}
-  retryRegroupDelay: 6
 --- !u!1001 &636111077
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19382,7 +19268,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2073113533}
+  - {fileID: 1562024039}
   m_Father: {fileID: 1865551780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &791662487
@@ -20122,6 +20008,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6095100082190626372, guid: 0673ba5a238e3334683a587613c9be69, type: 3}
   m_PrefabInstance: {fileID: 802136597}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &802746486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 802746487}
+  - component: {fileID: 802746488}
+  m_Layer: 0
+  m_Name: Camp_RockGarden
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &802746487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802746486}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.5878948, y: -0.5485091, z: 67.88904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1560587144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &802746488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802746486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
+  campName: Rock Garden
+  mobs:
+  - {fileID: 7919487610665145979, guid: 6127fec470ed8e445a80485dc945812d, type: 3}
+  - {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  firstGroupSize: 3
+  maxAlive: 3
+  radius: 4.5
+  respawnDelay: 30
+  respawnMinPlayerDistance: 14
+  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  rule: {fileID: 0}
+  retryRegroupDelay: 6
 --- !u!4 &805676926 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
@@ -28933,6 +28876,63 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4624458766430847684, guid: 27c3f4d36f77dde429372ccba3513837, type: 3}
+--- !u!1 &1223622211
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1223622212}
+  - component: {fileID: 1223622213}
+  m_Layer: 0
+  m_Name: Camp_PalmGrove
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1223622212
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223622211}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -15.115002, y: 2.2062788, z: 36.81106}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1560587144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1223622213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223622211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
+  campName: Palm Grove
+  mobs:
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  - {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
+  - {fileID: 7919487610665145979, guid: 6127fec470ed8e445a80485dc945812d, type: 3}
+  firstGroupSize: 3
+  maxAlive: 3
+  radius: 4.5
+  respawnDelay: 30
+  respawnMinPlayerDistance: 14
+  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  rule: {fileID: 0}
+  retryRegroupDelay: 6
 --- !u!1001 &1227932964
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29408,63 +29408,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
   m_PrefabInstance: {fileID: 1344402347}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1244569905
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1244569906}
-  - component: {fileID: 1244569907}
-  m_Layer: 0
-  m_Name: Camp_RockGarden
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1244569906
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244569905}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.84, y: 5, z: 18.300825}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1560587144}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1244569907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244569905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
-  campName: Rock Garden
-  mobs:
-  - {fileID: 7919487610665145979, guid: 6127fec470ed8e445a80485dc945812d, type: 3}
-  - {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
-  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
-  firstGroupSize: 3
-  maxAlive: 3
-  radius: 4.5
-  respawnDelay: 30
-  respawnMinPlayerDistance: 14
-  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-  rule: {fileID: 0}
-  retryRegroupDelay: 6
 --- !u!1001 &1250160664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32781,11 +32724,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4233366137089380037, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.025034068
+      value: -0.02503407
       objectReference: {fileID: 0}
     - target: {fileID: 4233366137089380037, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0012542873
+      value: 0.0012542874
       objectReference: {fileID: 0}
     - target: {fileID: 8189980434977739222, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_Name
@@ -32838,7 +32781,7 @@ PrefabInstance:
     - target: {fileID: 9036980633323257398, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: a6ab8038dff764241a4660f7333b0228, type: 2}
+      objectReference: {fileID: 9100000, guid: b6d12149a469a524a8e1120e208c5584, type: 2}
     - target: {fileID: 9036980633323257398, guid: 2dfbb63c9cdf7504faf4ff26b0581598, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -34211,8 +34154,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1429810721}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.4031579, z: -0, w: 0.91513044}
-  m_LocalPosition: {x: 39.376892, y: 12.3236065, z: 64.397964}
+  m_LocalRotation: {x: -0, y: 0.4464089, z: -0, w: 0.89482915}
+  m_LocalPosition: {x: 35.886963, y: 3.4761143, z: 65.47326}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -34942,6 +34885,136 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7584869621105587987, guid: 9813ed0b3eddc834a8202f421870eeb2, type: 3}
+--- !u!1001 &1455743534
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 397001288}
+    m_Modifications:
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9015124
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 72.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.17610349
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.98437166
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3051194849795972238, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+      propertyPath: m_Name
+      value: ShoreGuardian
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+--- !u!114 &1455743535 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4900780684875337256, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+  m_PrefabInstance: {fileID: 1455743534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4b75253e7f6614db3a312f5dd13845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Guardian.ShoreGuardian
+--- !u!4 &1455743536 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
+  m_PrefabInstance: {fileID: 1455743534}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1462556704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1462556705}
+  - component: {fileID: 1462556706}
+  m_Layer: 0
+  m_Name: Camp_TidePools
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1462556705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462556704}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -34.615, y: -3.1163838, z: 59.31106}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1560587144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1462556706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462556704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
+  campName: Tide Pools
+  mobs:
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  - {fileID: 1089732881762922831, guid: beee282e801008944a37e0e48f553526, type: 3}
+  firstGroupSize: 3
+  maxAlive: 3
+  radius: 4.5
+  respawnDelay: 30
+  respawnMinPlayerDistance: 14
+  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  rule: {fileID: 0}
+  retryRegroupDelay: 6
 --- !u!1001 &1464858255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37027,40 +37100,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4094916363087742, guid: 47555e4f5572b0d4c94e95b1b8d25596, type: 3}
   m_PrefabInstance: {fileID: 1525299530}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1535501869 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2535830973584934285, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-  m_PrefabInstance: {fileID: 2073113532}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1535501871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535501869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_CustomShadowLayers: 0
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
 --- !u!4 &1537092290 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
@@ -37140,79 +37179,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43999c511a596754fb989ff074c5955d, type: 3}
---- !u!1001 &1546387781
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 397001288}
-    m_Modifications:
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 7.68
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.9743562
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 38.39
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.098562546
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.9951309
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3051194849795972238, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-      propertyPath: m_Name
-      value: ShoreGuardian
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
---- !u!114 &1546387782 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4900780684875337256, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-  m_PrefabInstance: {fileID: 1546387781}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f4b75253e7f6614db3a312f5dd13845, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.Guardian.ShoreGuardian
---- !u!4 &1546387783 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1829853939585324161, guid: cbaee16f3bba8ea45a5d84e7462d3307, type: 3}
-  m_PrefabInstance: {fileID: 1546387781}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1547528653
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37746,9 +37712,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 635657748}
-  - {fileID: 435769921}
-  - {fileID: 1244569906}
+  - {fileID: 1462556705}
+  - {fileID: 1593618994}
+  - {fileID: 802746487}
+  - {fileID: 1223622212}
   m_Father: {fileID: 1865551780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1560635203
@@ -38327,6 +38294,105 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7538923576742910218, guid: c1d6b7954ca8dfe48885597ce4ef6e20, type: 3}
+--- !u!1001 &1562024038
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 788582612}
+    m_Modifications:
+    - target: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_Name
+      value: MapFragment
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 28.384998
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.04271221
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 57.81106
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2535830973584934285, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1562024041}
+  m_SourcePrefab: {fileID: 100100000, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+--- !u!4 &1562024039 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  m_PrefabInstance: {fileID: 1562024038}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1562024040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2535830973584934285, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  m_PrefabInstance: {fileID: 1562024038}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1562024041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562024040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &1563930366
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39687,6 +39753,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7746927824541037661, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
   m_PrefabInstance: {fileID: 675973326}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1593618993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1593618994}
+  - component: {fileID: 1593618995}
+  m_Layer: 0
+  m_Name: Camp_OldCampfire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1593618994
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593618993}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -37.615, y: -3.1608422, z: 17.311062}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1560587144}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1593618995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593618993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9936c5762a0784aae5d3ecaaca2625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.MobCamp
+  campName: Old Campfire
+  mobs:
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  - {fileID: 7919487610665145979, guid: 6127fec470ed8e445a80485dc945812d, type: 3}
+  - {fileID: 3177113252835962824, guid: 6f25cd381b0cc014194edc69e023cf74, type: 3}
+  firstGroupSize: 3
+  maxAlive: 3
+  radius: 4.5
+  respawnDelay: 30
+  respawnMinPlayerDistance: 14
+  fragmentPrefab: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
+  rule: {fileID: 0}
+  retryRegroupDelay: 6
 --- !u!1001 &1599099543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40492,73 +40615,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4315980460206069383, guid: d0fa3c49b2c9cd84bb5a644c53ef025e, type: 3}
   m_PrefabInstance: {fileID: 1659487213}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1660300874
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1741459259}
-    m_Modifications:
-    - target: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_Name
-      value: Visual
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.00000059604645
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -7.911066
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.999999
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
---- !u!1 &1660300875 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-  m_PrefabInstance: {fileID: 1660300874}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1660300876 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
-  m_PrefabInstance: {fileID: 1660300874}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1660564688
 GameObject:
@@ -43037,7 +43093,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 61.511032, y: 60.776512, z: 46.831062}
+  m_Size: {x: 96.601974, y: 81.88962, z: 82.31351}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1737606921
 Transform:
@@ -43048,7 +43104,7 @@ Transform:
   m_GameObject: {fileID: 1737606917}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.4595432, y: 13.505945, z: 25.216356}
+  m_LocalPosition: {x: -1.3140144, y: 16.58299, z: 37.467815}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43170,7 +43226,7 @@ MonoBehaviour:
   destination: {fileID: 1429810722}
   destinationName: Whispering Pines
   homeName: Still Shore
-  visual: {fileID: 1660300875}
+  visual: {fileID: 1919067775}
   interactRadius: 4
   maxSpeed: 7
   acceleration: 4
@@ -43186,12 +43242,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1741459257}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.49858385, z: -0, w: 0.8668415}
-  m_LocalPosition: {x: 8.485076, y: 12.811066, z: 30.94017}
+  m_LocalRotation: {x: -0, y: 0.55135834, z: -0, w: 0.8342685}
+  m_LocalPosition: {x: -1.3140144, y: 16.58299, z: 37.467815}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1660300876}
+  - {fileID: 1919067776}
   m_Father: {fileID: 1865551780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1741695685
@@ -45411,7 +45467,7 @@ Transform:
   m_GameObject: {fileID: 1786988913}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.749999, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5899999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46958,13 +47014,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MistIsles.World.IslandController
   islandName: Still Shore
   rule: {fileID: 11400000, guid: 71517d7aef52d2d4da3b4e3d20341c32, type: 2}
-  guardian: {fileID: 1546387782}
+  guardian: {fileID: 1455743535}
   mist: {fileID: 1737606918}
   raft: {fileID: 1741459258}
   respawnPoint: {fileID: 1786988914}
   area:
-    m_Center: {x: -3.4595432, y: 8.755946, z: 25.216356}
-    m_Extent: {x: 30.755516, y: 30.388256, z: 23.415531}
+    m_Center: {x: -1.3140144, y: 15.9929905, z: 37.467815}
+    m_Extent: {x: 48.300987, y: 40.94481, z: 41.156754}
   clearReward: 25
   card: {fileID: 793927116}
   fragmentsRequired: 3
@@ -46975,6 +47031,7 @@ MonoBehaviour:
   ambushSize: 3
   retryFragments: 2
   confinePlayerUntilCleared: 1
+  boundaryWater: 6
 --- !u!114 &1865551782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46990,8 +47047,8 @@ MonoBehaviour:
   m_SerializedVersion: 0
   m_AgentTypeID: 0
   m_CollectObjects: 1
-  m_Size: {x: 61.511032, y: 60.776512, z: 46.831062}
-  m_Center: {x: -3.4595432, y: 9.945946, z: 25.216356}
+  m_Size: {x: 96.601974, y: 81.88962, z: 82.31351}
+  m_Center: {x: -1.3140144, y: 16.58299, z: 37.467815}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 4294967243
@@ -48213,6 +48270,73 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f9036ec905b920479091aca9ba81305, type: 3}
+--- !u!1001 &1919067774
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1741459259}
+    m_Modifications:
+    - target: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_Name
+      value: Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0000014305115
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -15.842991
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.0000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+--- !u!1 &1919067775 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+  m_PrefabInstance: {fileID: 1919067774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1919067776 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 61895aefa3684d3448b565d3bfb3da38, type: 3}
+  m_PrefabInstance: {fileID: 1919067774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1923060547
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50497,71 +50621,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7538923576742910218, guid: c1d6b7954ca8dfe48885597ce4ef6e20, type: 3}
---- !u!1001 &2073113532
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 788582612}
-    m_Modifications:
-    - target: {fileID: 7766059617992664239, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_Name
-      value: MapFragment
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 19.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.4410226
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 15.833334
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2535830973584934285, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1535501871}
-  m_SourcePrefab: {fileID: 100100000, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
---- !u!4 &2073113533 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8381851724189800824, guid: a94bcb221be380e4c86964b33a949b00, type: 3}
-  m_PrefabInstance: {fileID: 2073113532}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2075219305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8464000029332216993, guid: 2c67fcaa19e584f4895159bb3b4e9ac1, type: 3}

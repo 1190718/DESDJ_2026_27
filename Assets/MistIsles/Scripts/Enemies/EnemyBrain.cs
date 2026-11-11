@@ -93,6 +93,9 @@ namespace MistIsles.Enemies
             home = transform.position;
             health.Damaged += OnDamaged;
             health.Died += OnDied;
+            // stand on the real ground and drop in on spawn (existing prefabs get it automatically)
+            if (GetComponent<MobGrounding>() == null)
+                gameObject.AddComponent<MobGrounding>();
         }
 
         private void Start()

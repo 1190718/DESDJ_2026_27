@@ -12,17 +12,12 @@ namespace MistIsles.Player
     /// (When this was done in LateUpdate the camera could read the position before the push-back
     /// and drift past the border.)
     ///
-    /// The edge is a soft wall: inside the last few metres the outward part of the movement is
-    /// damped, so the player slows down instead of hitting an invisible wall at full speed.
+    /// The limit follows the island's coastline (IslandController builds a mask of its land plus
+    /// a strip of sea). At the edge the player slides along it instead of stopping dead.
     /// </summary>
     [DefaultExecutionOrder(150)]
     public class PlayerBoundary : MonoBehaviour
     {
-        [Tooltip("Metres before the edge where outward movement starts to slow down.")]
-        [SerializeField] private float softZone = 3f;
-        [Tooltip("Distance kept from the exact edge of the island area.")]
-        [SerializeField] private float margin = 0.5f;
-
         private CharacterController controller;
         private Vector3 lastPosition;
 
@@ -44,49 +39,29 @@ namespace MistIsles.Player
                 return;
             }
 
-            Bounds a = island.Area;
-            float minX = a.min.x + margin, maxX = a.max.x - margin;
-            float minZ = a.min.z + margin, maxZ = a.max.z - margin;
-
-            float x = SoftAxis(lastPosition.x, pos.x, minX, maxX, out bool hitX);
-            float z = SoftAxis(lastPosition.z, pos.z, minZ, maxZ, out bool hitZ);
-
-            if (x != pos.x || z != pos.z)
+            // inside, or we were already outside (spawned/teleported there): never trap the player
+            if (island.IsInsideBoundary(pos) || !island.IsInsideBoundary(lastPosition))
             {
-                Vector3 target = new Vector3(x, pos.y, z);
-                if (controller != null && controller.enabled)
-                    controller.Move(target - pos); // keeps collisions; nothing is ever pushed into a rock
-                else
-                    transform.position = target;
+                lastPosition = pos;
+                return;
             }
-            if (hitX || hitZ)
-                island.NotifyBoundaryHit();
+
+            // Outside the coast limit: keep whichever part of the step stays inside (slide along
+            // the limit), otherwise go back to the last allowed position.
+            Vector3 target;
+            if (island.IsInsideBoundary(new Vector3(pos.x, pos.y, lastPosition.z)))
+                target = new Vector3(pos.x, pos.y, lastPosition.z);
+            else if (island.IsInsideBoundary(new Vector3(lastPosition.x, pos.y, pos.z)))
+                target = new Vector3(lastPosition.x, pos.y, pos.z);
+            else
+                target = new Vector3(lastPosition.x, pos.y, lastPosition.z);
+
+            if (controller != null && controller.enabled)
+                controller.Move(target - pos); // keeps collisions; nothing is ever pushed into a rock
+            else
+                transform.position = target;
+            island.NotifyBoundaryHit();
             lastPosition = transform.position;
-        }
-
-        /// <summary>
-        /// One horizontal axis: inside the soft zone the outward step is scaled down towards zero,
-        /// and the position is never allowed past the hard edge. Inward movement is untouched.
-        /// </summary>
-        private float SoftAxis(float from, float to, float min, float max, out bool hit)
-        {
-            hit = false;
-            float step = to - from;
-            if (step > 0f && to > max - softZone)
-            {
-                float room = Mathf.Clamp01((max - from) / Mathf.Max(0.01f, softZone));
-                to = from + step * room;
-                hit = room < 0.35f;
-            }
-            else if (step < 0f && to < min + softZone)
-            {
-                float room = Mathf.Clamp01((from - min) / Mathf.Max(0.01f, softZone));
-                to = from + step * room;
-                hit = room < 0.35f;
-            }
-            if (to > max) { to = max; hit = true; }
-            if (to < min) { to = min; hit = true; }
-            return to;
         }
     }
 }

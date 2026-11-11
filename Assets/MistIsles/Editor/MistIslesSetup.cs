@@ -431,6 +431,8 @@ namespace MistIsles.EditorTools
             anim.runtimeAnimatorController = ctrl;
             anim.applyRootMotion = false;
             anim.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+            if (key == "Slime")
+                RecolourSlime(model);
 
             // normalise size and stand it on the ground
             Bounds b = RendererBounds(model);
@@ -457,6 +459,55 @@ namespace MistIsles.EditorTools
             FinishMob(root, stats, shell, 1.3f * scale, 0.8f * scale);
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// The pack's slime is red, the same as the island's mushrooms. The slime gets its own
+        /// copy of the pack material that points at a palette where the red swatches were turned
+        /// violet (Generated/Textures/SlimePurple_*.png, made with Tools/Art/recolour_slime.py).
+        /// The turtle keeps the original material, so only the slime changes.
+        /// </summary>
+        private static void RecolourSlime(GameObject model)
+        {
+            var albedo = AssetDatabase.LoadAssetAtPath<Texture2D>(Gen + "/Textures/SlimePurple_Albedo.png");
+            var emission = AssetDatabase.LoadAssetAtPath<Texture2D>(Gen + "/Textures/SlimePurple_Emission.png");
+            if (albedo == null)
+            {
+                Debug.LogWarning("[Mist Isles] SlimePurple_Albedo.png not found; the slime keeps its original colour.");
+                return;
+            }
+            var made = new Dictionary<Material, Material>();
+            foreach (Renderer r in model.GetComponentsInChildren<Renderer>(true))
+            {
+                Material[] mats = r.sharedMaterials;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    Material src = mats[i];
+                    if (src == null)
+                        continue;
+                    if (!made.TryGetValue(src, out Material copy))
+                    {
+                        string path = $"{Gen}/Materials/Mob_Slime_{made.Count}.mat";
+                        copy = AssetDatabase.LoadAssetAtPath<Material>(path);
+                        if (copy == null)
+                        {
+                            copy = new Material(src);
+                            AssetDatabase.CreateAsset(copy, path);
+                        }
+                        else
+                            copy.CopyPropertiesFromMaterial(src);
+                        foreach (string prop in new[] { "_BaseMap", "_MainTex" })
+                            if (copy.HasProperty(prop))
+                                copy.SetTexture(prop, albedo);
+                        if (emission != null && copy.HasProperty("_EmissionMap"))
+                            copy.SetTexture("_EmissionMap", emission);
+                        EditorUtility.SetDirty(copy);
+                        made[src] = copy;
+                    }
+                    mats[i] = copy;
+                }
+                r.sharedMaterials = mats;
+            }
         }
 
         private static void FinishMob(GameObject root, MobStats stats, GameObject shell, float footprint, float height)
@@ -790,11 +841,17 @@ namespace MistIsles.EditorTools
                 ("Tide Pools", new[] { slimePrefab, slimePrefab, crabPrefab }),
                 ("Old Campfire", new[] { slimePrefab, turtlePrefab, slimePrefab }),
                 ("Rock Garden", new[] { turtlePrefab, crabPrefab, slimePrefab }),
+                ("Palm Grove", new[] { slimePrefab, crabPrefab, turtlePrefab }),
             };
+            // Camps are spread with farthest-point sampling over the walkable ground baked above,
+            // so they follow the island's current shape. The 4th camp only appears on a big enough
+            // island (enough walkable ground and room to keep camps 10 m apart).
             int camps = 0;
             foreach (var (campName, mobs) in compositions)
             {
-                Vector3? spot = FarthestFrom(walkable, taken, 7f);
+                if (camps == 3 && walkable.Count < 500)
+                    break;
+                Vector3? spot = FarthestFrom(walkable, taken, camps < 3 ? 7f : 10f);
                 if (spot == null)
                     break;
                 taken.Add(spot.Value);
